@@ -1,0 +1,812 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>
+    Newsletters
+</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <img src="{% static 'images/Decor v2.svg' %}" alt="" style="position: absolute; top: 0; right: 0; margin-right: 44px;" id="newsletterstatic">
+    <!-- TITLE -->
+    <div class="row mb-5">
+        <h2 class="orangeText">Newsletters</h2>
+    </div>
+    
+        <!-- <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="dropdown mt-2" style = "position: static; top: 0; z-index: 100;">
+                <div class="clusterSortMenu" type="button" id="newslettersDropDownMenuDate" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <p class = "body" id = "currentDateFilter">Sort by: 
+                        <img src="{% static 'images/union.png' %}" style = "width: 9px; height: 5px; float: right; margin-top: 10px;"alt="">
+                  </p>
+                </div>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id = "elementsDropdown" style = "width: inherit">
+                  <a onclick = "setDateFilterState(title = `Newest First`)" style = "cursor: pointer"  class="dropdown-item body secondDropdownBody" href="#">Newest First</a> 
+                  <a onclick = "setDateFilterState(title = `Oldest First`)" style = "cursor: pointer"  class="dropdown-item body secondDropdownBody" href="#">Oldest First</a> 
+                </div>
+            </div>
+        </div> -->
+        <!-- SEARCH BAR -->
+        <div class="searchBar mb-3" style="margin-left:0.1rem;" id="searchBarContainer">
+            <input type="text" placeholder="Search..." id="searchBar" onkeyup="findNewsletter()"/>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" >
+                <path d="M18.9999 19L14.6499 14.65M17 9C17 13.4183 13.4183 17 9 17C4.58172 17 1 13.4183 1 9C1 4.58172 4.58172 1 9 1C13.4183 1 17 4.58172 17 9Z" stroke="#8D8D8D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="magnifyGlass"/>
+            </svg>
+            </i>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class = "dropdownSpecial2">
+                    <p onclick="myFunction()" class="dropbtn2 body" id="currentDateFilter">Sort by: Newest First
+                        <img
+                        src="{% static 'images/union.png' %}"
+                        style="width: 9px; height: 5px; margin-top: 10px; margin-right: 23.52px;"
+                        alt=""
+                        />
+                    </p>
+                    <div id = "myDropdown2" class = "dropdown-content2">
+                        <p onclick = "setDateFilterState(title = `Newest First`)"  class = "body dropdownSpecialItem" style = "height: 40px; margin-top: 12px; margin-bottom: 0px;">
+                            Newest First
+                        </p>
+                        <p onclick = "setDateFilterState(title = `Oldest First`)" class = "body dropdownSpecialItem" style = "height: 40px; margin-bottom: 12px;">
+                            Oldest First
+                        </p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <!-- <div id = "wholeDropdown1" class="dropdown mt-2 " style= "width: 286px;">
+                    <div class = "dropdownHover" style = "background: #3B23EE; padding: 8px 16px; border-radius: 8px; height: 40px; color: white;" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style = "width: 283px; height: 40px;">
+                      <p class = "body" id = "currentFilter">Category: 
+                            <img src="{% static 'images/union.png' %}" style = "width: 9px; height: 5px; float: right; margin-top: 10px;"alt="">
+                      </p>
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style = "width: inherit">
+                      <a onclick = "setFilterState(title = `All`)" style = "cursor: pointer"  class="dropdown-item body" href="#">All</a> 
+                      {% for c in categories %}
+                      <a onclick = "setFilterState(title = `{{c.title}}`)" style = "cursor: pointer"  class="dropdown-item body">{{ c.title }}</a>
+                      {% endfor %}
+                    </div>
+                </div> -->
+
+                <div class = "dropdownSpecial3">
+                    <p onclick="myFunction3()" class="dropbtn3 body" id="currentFilter">Category:
+                        <img
+                        src="{% static 'images/union.png' %}"
+                        style="width: 9px; height: 5px; margin-top: 10px; margin-right: 23.52px;"
+                        alt=""
+                        />
+                    </p>
+                    <div id = "myDropdown3" class = "dropdown-content3">
+                        <p onclick = "setFilterState(title = `All`)" class = "body dropdownSpecialItem" style = "height: 40px; margin-top: 12px; margin-bottom: 0px;">All</p>
+                        {% for c in categories %}
+                        {% if forloop.last %}
+                        <p onclick = "setFilterState(title = `{{c.title}}`)" class = "body dropdownSpecialItem" style = "height: 40px; margin-bottom: 12px;">{{ c.title }}</p>
+                        {% else %}
+                        <p  onclick = "setFilterState(title = `{{c.title}}`)" class = "body dropdownSpecialItem" style = "height: 40px; margin-bottom: 0px;">{{ c.title }}</p>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <button onclick="applyFilters()" id = "newsletterApplyButton">Apply</button>
+            </div>
+        </div>
+    
+        <div class = "mt-5" id = "noNewsletterOfCategoryChosenFound" style = "display: none;">
+            <img class = "text-center" src="{% static 'images/coala.png' %}" style = "margin: 0 auto; display: block; width: 284px; height: 284px; margin-bottom: 20px;">
+            <p class = "subtitle1 blueberryText text-center" style = "margin-bottom: 128px;">Sorry! No newsletters of that Category currently published...</p>
+        </div>
+
+    <!-- NEWSLETTERS FRAME -->
+    <!-- DESKTOP -->
+    <div>
+        <div class="row pt-5 mb-4 desktopNewsletters" id="desktopNewslettersChecker">
+            {% if newsletter.count > 0%}
+            {% for n in newsletter %}
+            <div class="row newsletterWhole mb-5" style="cursor: pointer; padding-left: 0px; padding-right: 0px; margin-left: 12px;" onclick="window.location=`{% url 'indivnewsletter' pk=n.pk %}`">
+                <div class="col-md-4 col-sm-12" style = "padding-left: 0px; padding-right: 0px;">
+                  <img src="https://drive.google.com/uc?id={{ n.photo}}&authuser=0" class = "newsletterImage" alt="" style = "object-fit: cover; background-color: #AEAEAE;">
+                </div>
+                <div class="col-md-8 newsletterRow" style = "padding-left: 30px; height: 216px;">
+                  <p class = "mt-4"><span class = "newsletterCategory"><label>{{ n.category }}</label></span></p>
+                  <h3>{{ n.title }}</h3>
+                  <p class = "small grayText">{{ n.author }} • {{n.date.day}} {{n.date|date:'F'}} {{n.date.year}}</p>
+                  <p class ="body" >{{ n.content|safe|truncatechars:200 }}</p>
+                </div> 
+                <div class="newsletterContent">
+                    {{n.content|safe}}
+                </div>
+
+              </div>
+            {% endfor %}
+            {% else %}
+                <img class = "text-center" src="{% static 'images/coala.png' %}" alt="elo" style = "margin: 0 auto; display: block; width: 284px; height: 284px; margin-bottom: 20px;">
+                <p class = "subtitle1 blueberryText text-center" style = "margin-bottom: 128px;">Sorry! No newsletters currently published...</p>
+            {% endif %}
+        </div>
+    
+        <!-- MOBILE -->
+        <div class="row pt-5 mb-3 mobileNewsletters" id="desktopNewslettersCheckerMobile" style="display: none;">
+            {% if newsletter.count > 0 %}
+            {% for n in newsletter %}
+            <div onclick="window.location=`{% url 'indivnewsletter' pk=n.pk %}`" class="row px-0 mb-5 newsletterRowMobile" style="transition: 0.25s; border-radius: 12px; background: #FFC100; margin-left: 2px; margin-right: 2px; box-shadow: 0px 2px 4px rgba(21, 21, 21, 0.25);     white-space: nowrap !important; overflow: hidden !important; display: none; text-overflow: ellipsis !important; width: 85%; margin: auto; ">
+                <img style="margin-bottom: 24px; background-color: #AEAEAE;" class="px-0  newsletterImageMobile" src="https://drive.google.com/uc?id={{n.photo}}&authuser=0"></img>
+                <p><span class="newsletterCategory"><label>{{ n.category }}</label></span></p>
+                <h3>{{ n.title }}</h3>
+                <p class="small grayText">{{ n.author }} • {{n.date.day}} {{n.date|date:'F'}} {{n.date.year}}</p>
+                {{ n.content|safe|truncatechars:100 }}
+                <div class="newsletterContentMobile">
+                    {{n.content|safe}}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+                <img class = "text-center" src="{% static 'images/coala.png' %}" alt="elo" style = "margin: 0 auto; display: block; width: 284px; height: 284px; margin-bottom: 20px;">
+                <p class = "subtitle1 blueberryText text-center" style = "margin-bottom: 128px;">Sorry! No newsletters currently published...</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- NO RESULTS -->
+    <div class="row" id="newsNoResults" style="display: none">
+        <img class="text-center" src="{% static 'images/coala.png' %}" alt="" style=" margin: 0 auto; display: block; width: 310px;  height: 290px; margin-bottom: 20px;"/>
+        <p class="subtitle1 blueberryText text-center">
+            Sorry! We can’t seem to find what you’re looking for...
+        </p>
+    </div>
+
+    <div class="row mt-5">
+        <button id="newsletterLoadMoreButton" onclick="newsletterRenderMore()" class="text-center"
+            style="width: 144px; height: 56px; margin: auto; margin-bottom: 128px">Load More</button>
+    </div>
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script>
+    var firstDropdownShown = false;
+    var secondDropdownShown = false;
+
+    // FIRST DROPDOWN
+    function myFunction() {
+      document.getElementById("myDropdown2").classList.toggle("show");
+      firstDropdownShown= !firstDropdownShown;
+
+      if (firstDropdownShown){
+        document.getElementsByClassName("dropbtn2")[0].style.backgroundColor = "#714CF7"
+      }
+      else{
+        document.getElementsByClassName("dropbtn2")[0].style.backgroundColor = "#3B23EE"
+      }
+    }
+
+    // SECOND DROPDOWN
+    function myFunction3() {
+      document.getElementById("myDropdown3").classList.toggle("show");
+      secondDropdownShown = !secondDropdownShown;
+    
+      if (secondDropdownShown){
+        document.getElementsByClassName("dropbtn3")[0].style.backgroundColor = "#714CF7"
+      } else {
+        document.getElementsByClassName("dropbtn3")[0].style.backgroundColor = "#3B23EE"
+      }
+
+    }
+
+    window.onclick = function (event) {
+    var checker1 = event.target.matches(".dropbtn2");
+    var checker2 = event.target.matches(".dropbtn3");
+    // 
+    // 
+      if (checker1 == false || checker2 == false) {
+        if (checker1 == false){
+            var dropdowns = document.getElementsByClassName("dropdown-content2");
+            // 
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains("show")) {
+                   openDropdown.classList.remove("show");
+                   firstDropdownShown = false;
+                   document.getElementsByClassName("dropbtn2")[0].style.backgroundColor = "#3B23EE";
+            }
+            }
+        }
+
+        if (checker2 == false){
+            var dropdowns2 = document.getElementsByClassName("dropdown-content3");
+            var i;
+            for (i = 0; i < dropdowns2.length; i++) {
+            var openDropdown = dropdowns2[i];
+            if (openDropdown.classList.contains("show")) {
+                openDropdown.classList.remove("show");
+                secondDropdownShown = false;
+                document.getElementsByClassName("dropbtn3")[0].style.backgroundColor = "#3B23EE";
+            }
+            }
+        }
+
+      }
+    //   else if (!event.target.matches(".dropbtn3")){
+    //     var dropdowns = document.getElementsByClassName("dropdown-content3");
+    //     
+    //     
+    //     var i;
+    //     for (i = 0; i < dropdowns.length; i++) {
+    //       var openDropdown = dropdowns[i];
+    //       if (openDropdown.classList.contains("show")) {
+    //         openDropdown.classList.remove("show");
+    //       }
+    //     }
+    //   }
+    };
+
+    // window.onclick = function(event) {
+    //     if (event.target.matches("#myDropdown3")){
+    //         document.getElementById("myDropdown3").classList.toggle("show");
+    //     }
+
+    // }
+    // if (!event.target.matches('.dropbtn2')) {
+        // var dropdowns = document.getElementsByClassName("dropdown-content");
+        // var i;
+        // for (i = 0; i < dropdowns.length; i++) {
+        //   var openDropdown = dropdowns[i];
+        //   if (openDropdown.classList.contains("show")) {
+        //     openDropdown.classList.remove("show");
+        //   }
+        // }
+
+
+
+
+    var searchCounter = 5
+    counter = 5; 
+    firstInstance = true;
+    reverse = false;
+    var choiceFilter = "";
+    var choiceDateFilter = "";
+    var searchBar = document.getElementById("searchBar");
+    var newsNoResults = document.getElementById("newsNoResults");
+
+    if(localStorage.getItem("currentFilter") === null){
+        
+        localStorage.setItem("currentFilter", "All")
+    }
+
+    if(localStorage.getItem("currentDateFilter") === null){
+        
+        localStorage.setItem("currentDateFilter", "Newest First")
+    }
+
+    $.fn.reverseChildren = function() {
+        return this.each(function(){
+            var $this = $(this);
+            $this.children().each(function(){ $this.prepend(this) });
+        });
+    };
+
+    if (localStorage.getItem("currentFilter") != null || localStorage.getItem("currentFilter") != ""){
+        filterState = localStorage.getItem("currentFilter");
+        document.getElementById("currentFilter").innerHTML = "Category: " + localStorage.getItem("currentFilter");
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        x.style.marginRight = "23.52px";
+        document.getElementById("currentFilter").appendChild(x);
+    } else {
+        localStorage.setItem("currentFilter", "All")
+        filterState = localStorage.getItem("currentFilter");
+        document.getElementById("currentFilter").innerHTML = "Category: " + localStorage.getItem("currentFilter");
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        // x.style.marginRight = "23.52px";
+        document.getElementById("currentFilter").appendChild(x);
+    }
+
+    if (localStorage.getItem("currentDateFilter") != null || localStorage.getItem("currentDateFilter") != ""){
+        dateState = localStorage.getItem("currentDateFilter");
+        document.getElementById("currentDateFilter").innerHTML = "Sort by: " + localStorage.getItem("currentDateFilter");
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        x.style.marginRight = "23.52px";
+        document.getElementById("currentDateFilter").appendChild(x);
+    } else {
+        localStorage.setItem("currentFilter", "Newest First")
+        dateState = localStorage.getItem("currentFilter");
+        document.getElementById("currentDateFilter").innerHTML = "Sort by: " + localStorage.getItem("currentDateFilter");
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        x.style.marginRight = "23.52px";
+        document.getElementById("currentDateFilter").appendChild(x);
+    }
+
+    // INITIAL FILTER
+    function initialFilter(){
+        filterState = localStorage.getItem("currentFilter");
+        dateState = localStorage.getItem("currentDateFilter");
+        var newsletterCount = `{{ newsletter.count }}`;
+        if (newsletterCount > 0){
+            newsletterRender();
+        }
+        else {
+            document.getElementById("newsletterLoadMoreButton").style.display = "none"
+        }
+    }
+    initialFilter();
+
+    // Setting Category Filter State
+    function setFilterState(title){
+        choiceFilter = title;
+        document.getElementById("currentFilter").innerHTML = "Category: " + title;
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        x.style.marginRight = "23.52px";
+        document.getElementById("currentFilter").appendChild(x);
+        showCounter = 5;
+        counter = 5;
+    }
+
+    function setDateFilterState(title){
+        choiceDateFilter = title;
+        document.getElementById("currentDateFilter").innerHTML = "Sort by: " + title;
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        x.style.marginRight = "23.52px";
+        document.getElementById("currentDateFilter").appendChild(x);
+    }
+
+    // Applying Category + Date Filter States
+    function applyFilters(){
+        
+
+        if (choiceFilter == ""){
+            choiceFilter = document.getElementById("currentFilter").textContent.split(": ")[1];
+        }
+
+        if (choiceDateFilter == ""){
+            choiceDateFilter = document.getElementById("currentDateFilter").textContent.split(": ")[1];
+        }
+        var filter = choiceFilter;
+        var dateFilter = choiceDateFilter;
+
+        
+
+        filterState = filter;
+        dateState = dateFilter;
+        
+        firstInstance = true;
+        showCounter = 5;
+        counter = 5;
+        
+        // Saving Applied Filters to LocalStorage
+        localStorage.setItem("currentFilter", filterState);
+        localStorage.setItem("currentDateFilter", dateState);
+    
+
+        document.getElementById("newsletterLoadMoreButton").style.display = ""
+        document.getElementById("searchBar").value = "";
+        newsNoResults.style.display="none";
+
+        // Check if newsletter count > 0
+        var newsletterCount = `{{ newsletter.count }}`
+        
+        if (newsletterCount > 0){
+            newsletterRender();
+        }
+        else {
+            document.getElementById("newsletterLoadMoreButton").style.display = "none"
+        }
+    }
+
+    // Renders Newsletters based on Category + Date Filter States
+    function newsletterRender() {
+        // Setting dateState Logic
+        if (dateState == "Newest First"){
+            if (reverse == true){
+                $('#desktopNewslettersChecker').reverseChildren();
+                $('#desktopNewslettersCheckerMobile').reverseChildren();
+                reverse = false;
+            }
+        } else if (dateState == "Oldest First"){
+            if (reverse == false){
+                $('#desktopNewslettersChecker').reverseChildren();
+                $('#desktopNewslettersCheckerMobile').reverseChildren();
+                reverse = true;
+            }
+        }
+        
+        // Getting all newsletters for both desktop and mobile
+        children = document.getElementById("desktopNewslettersChecker").children;
+        childrenMobile = document.getElementById("desktopNewslettersCheckerMobile").children;
+        
+        
+        
+        // hides everything first
+        for (var i = 0; i < children.length; i++) {
+            children[i].style.display = "none"
+            childrenMobile[i].style.display = "none"
+        }
+        
+        
+        // checks if filterstate is not all
+        if (filterState != "All") {
+            counter = 5;
+            
+            filterCounter = 0;
+
+            if (firstInstance){
+                showCounter = 5;
+            }
+            for (var i = 0; i < children.length; i++) {
+                try{
+                    var test = children[i].children[1].children[0].children[0].children[0].textContent;
+                    
+                    if (test == filterState){
+                        filterCounter +=1;
+                    }
+                }
+                catch{
+
+                }
+            }
+            
+            
+            let currentNewslettersShownCounter = 0;
+            if (filterCounter == 0){
+                
+                document.getElementById("noNewsletterOfCategoryChosenFound").style.display = "";
+            } 
+            else {
+                document.getElementById("noNewsletterOfCategoryChosenFound").style.display = "none";
+                for (var i = 0; i < children.length; i++){
+                var test = children[i].children[1].children[0].children[0].children[0].textContent;
+                
+                
+                
+                
+                if (test == filterState){
+                    
+                    currentNewslettersShownCounter += 1;
+                    
+                    
+                    children[i].style.display = ""
+                    childrenMobile[i].style.display = ""       
+                    if (currentNewslettersShownCounter == showCounter){
+                        
+                        break
+                    }
+                }
+
+                if (i == children.length) {
+                    break
+                }
+            }
+            }
+            
+
+        }
+        
+        // ALL
+        else {
+            document.getElementById("noNewsletterOfCategoryChosenFound").style.display = "none";
+            for (var i = 0; i < counter; i++) {
+                
+                
+                if (i == children.length) {
+                    break
+                }
+                children[i].style.display = "";
+                childrenMobile[i].style.display = "";
+            }
+        }
+        checkIfAllRendered();
+    }
+
+
+
+    function newsletterRenderMore() {
+        if (filterState != "All"){
+            showCounter += 5;
+            firstInstance = false;
+        }
+        else{
+            counter += 5;
+            searchCounter += 5;
+        }
+        // if search blank is blank, meaning prioritizes filters
+        if(searchBar.value == ""){
+            newsletterRender();
+        }
+        else{
+            newsletterSearchRender();
+            newsletterSearchRenderMobile();
+        }
+
+    }
+
+    function checkIfAllRendered() {
+        if (filterState != "All"){
+            if (filterCounter <= showCounter) {
+                document.getElementById("newsletterLoadMoreButton").style.display = "none";
+            }
+        } 
+        else{
+            if (children.length <= counter) {
+                document.getElementById("newsletterLoadMoreButton").style.display = "none";
+            }
+        }
+
+    }
+
+    // fixing margins
+    function buttonsFormat(){
+        if(window.innerWidth <= 768){
+            document.getElementById("newsletterApplyButton").classList.remove("mt-2");
+            document.getElementById("newsletterApplyButton").classList.add("mt-4");
+        } else {
+            document.getElementById("newsletterApplyButton").classList.remove("mt-4");
+            // document.getElementById("newsletterApplyButton").classList.add("mt-2");
+        }
+    }
+    window.addEventListener('resize',buttonsFormat)
+    window.addEventListener('load',buttonsFormat)
+</script>
+<script>
+    var searchBar = document.getElementById("searchBar");
+    var magnifyGlass = document.getElementById("magnifyGlass");
+    var searchBarContainer = document.getElementById("searchBarContainer");
+    var loadMoreButton = document.getElementById("newsletterLoadMoreButton");
+    var newsRow = document.querySelectorAll(".newsletterWhole");
+    var newsRowMobile = document.querySelectorAll(".newsletterRowMobile")
+
+
+
+    function findNewsletter(){
+        // VALUE OF SEARCH BAR
+        var typeCounter = 0;
+        var typeCounterMobile = 0;
+        var displayCounter = 0;
+        var displayCounterMobile = 0;
+        var filter = searchBar.value.toUpperCase();
+        searchCounter = 5
+        // FORMATTING OF DROP DOWNS
+        filterState = "All";
+        document.getElementById("currentFilter").innerHTML = "Category: " + filterState;
+        var x = document.createElement("IMG");
+        x.src = '../static/images/union.png';
+        x.style.width = "9px";
+        x.style.height = "5px";
+        x.style.float = "right";
+        x.style.marginTop = "10px";
+        x.style.marginRight = "23.52px";
+        document.getElementById("currentFilter").appendChild(x);
+        
+        document.getElementById("noNewsletterOfCategoryChosenFound").style.display = "none";
+        if(newsRow.length != 0 || newsRowMobile.length != 0){
+            for(i of newsRow){
+                // WHERE TO FIND
+                // TITLE
+                var newsTitle = i.children[1].children[1].innerHTML
+                // AUTHOR
+                var authorAndDate = i.children[1].children[2].innerHTML.split(" • ")
+                var newsAuthor = authorAndDate[0]
+                // DATE
+                var newsDayFirst = authorAndDate[1].toUpperCase()
+
+                var newsDate = authorAndDate[1].split(" ")
+                var newsDay = newsDate[0]
+                var newsMonth = newsDate[1]
+                var newsYear = newsDate[2]
+                var newsMonthFirst = newsMonth.toUpperCase() + " " + newsDay + " " + newsYear
+
+                // CONTENT
+                var newsContent = ""
+                var contentsContainer = i.children[2]
+
+                for(l of contentsContainer.children){
+                    newsContent += l.innerText
+                }
+                i.style.display = "none"
+                if (newsTitle.toUpperCase().includes(filter) || newsAuthor.toUpperCase().includes(filter) || newsDay.includes(filter) || newsMonth.toUpperCase().includes(filter) || newsYear.includes(filter) || newsDayFirst.includes(filter) || newsMonthFirst.includes(filter) || newsContent.toUpperCase().includes(filter)){
+                    i.classList.add("searched")
+                    typeCounter = 1;
+                    displayCounter += 1
+
+                }
+                else{
+                    i.classList.remove("searched");
+                    
+                }
+                newsletterSearchRender()
+            }
+            for(j of newsRowMobile){
+                
+                // WHERE TO FIND
+                // TITLE
+                var newsTitleMobile = j.children[2].innerHTML
+                // AUTHOR
+                var authorAndDateMobile = j.children[3].innerHTML.split(" • ")
+                var newsAuthorMobile = authorAndDateMobile[0]
+                // DATE
+                var newsDayFirstMobile = authorAndDateMobile[1].toUpperCase()
+
+                var newsDateMobile = authorAndDateMobile[1].split(" ")
+                var newsDayMobile = newsDateMobile[0]
+                var newsMonthMobile = newsDateMobile[1]
+                var newsYearMobile = newsDateMobile[2]
+                var newsMonthFirstMobile = newsMonthMobile.toUpperCase() + " " + newsDayMobile + " " + newsYearMobile
+
+
+                // CONTENT
+                var newsContentMobile = ""
+                var contentsContainerMobile = j.children[5]
+
+                for(k of contentsContainerMobile.children){
+                    newsContentMobile += k.innerText
+                }
+                j.style.display = "none"
+                if (newsTitleMobile.toUpperCase().includes(filter) || newsAuthorMobile.toUpperCase().includes(filter) || newsDayMobile.includes(filter) || newsMonthMobile.toUpperCase().includes(filter) || newsYearMobile.includes(filter) || newsDayFirstMobile.includes(filter) || newsMonthFirstMobile.includes(filter) || newsContentMobile.toUpperCase().includes(filter)){
+                    j.classList.add("searchedMobile");
+                    typeCounterMobile = 1;
+                    displayCounterMobile += 1;
+                }
+                else{
+                    j.classList.remove("searchedMobile");
+                    
+                }
+            }
+            newsletterSearchRenderMobile()
+        }
+    }
+
+
+    function newsletterSearchRender(){
+        setFilterState(title = "All");
+        var searchedNewsletters = document.getElementsByClassName("searched")
+        var searchedNewslettersCount = searchedNewsletters.length
+        var sideCounter = 0
+        var searchBar = document.getElementById("searchBar");
+        var newsNoResults = document.getElementById("newsNoResults");
+
+        if(searchedNewslettersCount==0){
+            newsNoResults.style.display = ""
+            loadMoreButton.style.display = "none";
+        }
+        for(i of searchedNewsletters){
+            // if total elements is more than 5, meaning we still need to hide some elements
+            if(searchedNewslettersCount > searchCounter){
+                newsNoResults.style.display="none";
+                i.style.display = "";
+                sideCounter += 1
+                if(sideCounter == searchCounter){
+                    loadMoreButton.style.display = "";
+                    break
+                }
+            }
+            // if newsletters are less than 5, so would only need to display them and hide load more button
+            else if ((searchedNewslettersCount <= 5 && searchedNewslettersCount > 0)){
+                i.style.display = "";
+                newsNoResults.style.display="none";
+                loadMoreButton.style.display = "none";
+            }
+            else{
+                i.style.display = ""
+                loadMoreButton.style.display = "none";
+                newsNoResults.style.display="none";
+            }
+        }
+    }
+
+    function newsletterSearchRenderMobile(){
+        setFilterState(title = "All");
+        var searchedNewslettersMobile = document.getElementsByClassName("searchedMobile")
+        var searchedNewslettersCountMobile = searchedNewslettersMobile.length
+        var sideCounterMobile = 0
+        var searchBar = document.getElementById("searchBar");
+        var newsNoResults = document.getElementById("newsNoResults");
+
+        if(searchedNewslettersCountMobile == 0){
+            newsNoResults.style.display = ""
+            loadMoreButton.style.display = "none";
+        }
+        for(j of searchedNewslettersMobile){
+            // if total elements is more than 5, meaning we still need to hide some elements
+            if(searchedNewslettersCountMobile > searchCounter){
+                newsNoResults.style.display="none";
+                j.style.display = "";
+                sideCounterMobile += 1;
+                if(sideCounterMobile == searchCounter){
+                    loadMoreButton.style.display = "";
+                    break
+                }
+            }
+            // if newsletters are less than 5, so would only need to display them and hide load more button
+            else if (searchedNewslettersCountMobile <= 5 && searchedNewslettersCountMobile > 0){
+                j.style.display = "";
+                newsNoResults.style.display="none";
+                loadMoreButton.style.display = "none";
+            }
+            else{
+                j.style.display = "";
+                loadMoreButton.style.display = "none";
+                newsNoResults.style.display="none";
+            }
+        }
+    }
+
+    document.addEventListener("click", function changeMagnifyGlassColor() {
+      if (searchBar === document.activeElement) {
+        magnifyGlass.setAttribute('stroke','#3B23EE')
+      } else {
+        magnifyGlass.setAttribute('stroke','#8D8D8D')
+      }
+    })
+
+    function adjustToMobile() {
+      if (window.innerWidth >= 992) {
+        searchBarContainer.style.width = "286px";
+      } else if (window.innerWidth < 991) {
+        searchBarContainer.style.width = "100%";
+      }
+    }
+    window.addEventListener("resize", adjustToMobile);
+    window.addEventListener("load", adjustToMobile);
+</script>
+<script>
+    let static = document.getElementById('newsletterstatic')
+
+    function staticMobile(){
+        static.classList.add('displaynone')
+      }
+
+      function removestaticMobile(){
+        static.classList.remove('displaynone')
+      }
+
+      function staticFormat(){
+        if(window.innerWidth <= 991){
+            staticMobile()
+        }
+        else if(window.innerWidth > 991){
+            removestaticMobile()
+        }
+      }
+
+      window.addEventListener('resize', staticFormat)
+      window.addEventListener('load', staticFormat)
+</script>
+{% endblock content %}

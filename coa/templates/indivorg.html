@@ -1,0 +1,620 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>{{lia.name}}</title>
+{% endblock %}
+<body>
+  {% block content %}
+  <div class="container mb-5">
+    <!-- FIRST FRAME -->
+    <div class="orgFirstFrame">
+      <div class="row orgBack" style="width: fit-content;">
+        <a href="{% url 'organizations'%}"><i class="fa-solid fa-arrow-left"></i><label>back</label></a>
+      </div>
+      <div class="row mt-5 mb-5 w-100 justify-content-center">
+        <div class="col-3 d-flex align-items-center" id="orgLogoContainer">
+          <img src="https://drive.google.com/uc?id={{lia.logo}}&authuser=0" alt="">
+        </div>
+        <div class="col-md-9 col-sm-12 titleAndLinks">
+          <div class="orgTagContainer">
+            {% for tag in lia.tags.all %}
+            <span class="orgTag"> {{ tag }} </span>
+            {% endfor %}
+          </div>
+          <div class="row">
+            <h1 class="orangeText">{{ lia.name }}</h1>
+          </div>
+          <div class="row">
+            <h2 class="orangeText">{{lia.abbreviation}}</h2>
+          </div>
+          <div class="indivOrgLinks">
+            <a id="email" href="mailto:{{lia.email}}"><button class="btn-circle-contactUs"><i class="fa-solid fa-envelope fa-lg"></i></button></a>
+            <a id="website" href="{{lia.website_link}}" target = "_blank"><button class="btn-circle-contactUs"><i class="fa-solid fa-globe"></i></button></a>
+            <a id="fb" href="{{lia.facebook_link}}" target = "_blank"><button class="btn-circle-contactUs"><i class="fa-brands fa-facebook-f"></i></button></a>
+            <a id="twt" href="{{lia.twitter_link}}" target = "_blank"><button class="btn-circle-contactUs"><i class="fa-brands fa-twitter"></i></button></a>
+            <a id="ig" href="{{lia.instagram_link}}" target = "_blank"><button class="btn-circle-contactUs"><i class="lni lni-instagram-filled"></i></button></a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <p>{{lia.description}}</p>
+      </div>
+    </div>
+
+    <!-- LATEST EVENTS (With Table of Contents)-->
+    <img src="{% static 'images/Star 1.svg' %}" alt="" style="z-index: -1000; position: absolute; right: 0;" id="staticindivorg">
+    <div class="d-flex justify-content-end w-100 dd" style="position: sticky; top: 0; z-index: 1;" id="ddcontainer">
+      <!-- <div class="dropdown tableOfContents" id="tableOfContents">
+        <div class="clusterSortMenu tableOfContentsButton" type="button" id="dropdownMenuButtonIndiv" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <p class="body">
+            Table of Contents
+            <img src="{% static 'images/union.png' %}" style="width: 9px; height: 5px; float: right; margin-top: 10px" alt=""/>
+          </p>
+        </div>
+        <div class="dropdown-menu tableOfContentsMenu w-100" aria-labelledby="dropdownMenuButtonIndiv"id="dropdownMenuIndiv">
+
+        </div>
+      </div> -->
+
+      <div class="dropdownSpecial">
+        <p onclick="myFunction()" class="dropbtn body" id="currentFilter">Table of Contents
+          <img
+          src="{% static 'images/union.png' %}"
+          style="width: 9px; height: 5px; float: right; margin-top: 10px; margin-right: 23.52px;"
+          alt=""
+        />
+        </p>
+        <div id="myDropdown" class="dropdown-content">
+          <a class="dropdown-item w-100 dropdownSpecialItem body" href="#latestEvents"
+          style = "height: 40px; margin-top: 12px; margin-bottom: 0px;" ><i class="fa-solid fa-angles-right" id="doublearrow1"></i
+          ><span>Latest Events</span></a>
+        <a class="dropdown-item w-100 dropdownSpecialItem body" href="#advocacy"
+        style = "height: 40px; margin-bottom: 0px;"  ><i class="fa-solid fa-angles-right" id="doublearrow2"></i
+          ><span>Advocacy</span></a>
+        <a class="dropdown-item w-100 dropdownSpecialItem body" href="#coreComp"
+        style = "height: 40px; margin-bottom: 0px;"  ><i class="fa-solid fa-angles-right" id="doublearrow3"></i
+          ><span>Core Competensies</span></a>
+        <a class="dropdown-item w-100 dropdownSpecialItem body" href="#top3"
+        style = "height: 40px; margin-bottom: 0px;"  ><i class="fa-solid fa-angles-right" id="doublearrow4"></i
+          ><span>Top 3 Projects</span></a>
+        <a class="dropdown-item w-100 dropdownSpecialItem body" href="#memberStories"
+        style = "height: 40px; margin-bottom: 12px;"><i class="fa-solid fa-angles-right" id="doublearrow5"></i
+          ><span>Member Stories</span></a>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="row">
+      <h2 class="orangeText contentTitle" id="latestEvents">Latest Events</h2>
+    </div>
+    <div class="row" id="eventsFrame">
+      {% if event.count == 0 %}
+        <img
+          class="text-center"
+          src="{% static 'images/coala.png' %}"
+          alt="elo"
+          style="
+            margin: 0 auto;
+            display: block;
+            width: 284px;
+            height: 284px;
+            margin-bottom: 20px;
+          "
+        />
+        <p class="subtitle1 blueberryText text-center">
+          Sorry! No events seem to be scheduled for this org...
+        </p>
+      {% else %} 
+        {% for e in event %} 
+          {% if forloop.counter|divisibleby:2 %}
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+              <div class="eventBoxEven p-4" style="margin: auto; cursor: pointer;" onclick="window.open(`{{ e.event_link }}`, '_blank')">
+                <p class="small" style="margin-bottom: 0px">
+                  {{ e.start_date|date:'F' }}
+                  <!-- if end date exists -->
+                  {% if e.end_date %}
+                  <!--  -->
+                  {% if e.start_date|date:'F' != e.end_date|date:'F' %} 
+                    - {{e.end_date|date:'F' }} 
+                  {% endif %} 
+                  {% endif %}
+                </p>
+                  <h2>
+                    {{ e.start_date.day }} {% if e.end_date.day %} - {{ e.end_date.day}}
+                    {% endif %}
+                    <span class="orgTag"> {{ e.organization }} </span>
+                  </h2>
+                <p class="subtitle2">{{ e.name }}</p>
+                <div class="eventBottomDetails">
+                  <p class="small">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style = "margin-right: 8.58px;">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M2.08334 8.00016C2.08334 4.73248 4.73232 2.0835 8 2.0835C11.2677 2.0835 13.9167 4.73248 13.9167 8.00016C13.9167 11.2678 11.2677 13.9168 8 13.9168C4.73232 13.9168 2.08334 11.2678 2.08334 8.00016ZM8 0.583496C3.90389 0.583496 0.583336 3.90405 0.583336 8.00016C0.583336 12.0963 3.90389 15.4168 8 15.4168C12.0961 15.4168 15.4167 12.0963 15.4167 8.00016C15.4167 3.90405 12.0961 0.583496 8 0.583496ZM8.75 4.00016C8.75 3.58595 8.41422 3.25016 8 3.25016C7.58579 3.25016 7.25 3.58595 7.25 4.00016V8.00016C7.25 8.28424 7.4105 8.54394 7.66459 8.67098L10.3313 10.0043C10.7017 10.1896 11.1522 10.0394 11.3375 9.66891C11.5227 9.29842 11.3726 8.84792 11.0021 8.66268L8.75 7.53664V4.00016Z" fill="white"/>
+                      </svg>   
+                  {% if e.all_day %} 
+                    All Day 
+                  {% else %} 
+                    {{ e.start_time }} - {{e.end_time }} 
+                  {% endif %}
+                </p>
+                <p class="small">
+                  <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg" style = "margin-right: 8.58px;">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.28769 3.95419C4.27225 2.96963 5.60761 2.4165 7 2.4165C8.39239 2.4165 9.72774 2.96963 10.7123 3.95419C11.6969 4.93876 12.25 6.27412 12.25 7.6665C12.25 9.69838 10.9257 11.6822 9.45554 13.234C8.73579 13.9938 8.0135 14.616 7.4703 15.0485C7.29117 15.1912 7.13218 15.3127 7 15.4111C6.86782 15.3127 6.70883 15.1912 6.5297 15.0485C5.9865 14.616 5.26421 13.9938 4.54446 13.234C3.0743 11.6822 1.75 9.69838 1.75 7.6665C1.75 6.27412 2.30312 4.93876 3.28769 3.95419ZM6.58358 16.9569C6.58379 16.9571 6.58397 16.9572 7 16.3332L6.58397 16.9572C6.8359 17.1252 7.1641 17.1252 7.41603 16.9572L7 16.3332C7.41603 16.9572 7.41621 16.9571 7.41642 16.9569L7.41696 16.9566L7.41844 16.9556L7.42303 16.9525L7.43861 16.942C7.45179 16.933 7.47052 16.9202 7.49441 16.9037C7.54219 16.8706 7.61068 16.8225 7.69693 16.7602C7.86936 16.6357 8.1132 16.4541 8.4047 16.222C8.9865 15.7587 9.76421 15.0892 10.5445 14.2656C12.0743 12.6508 13.75 10.3013 13.75 7.6665C13.75 5.87629 13.0388 4.1594 11.773 2.89353C10.5071 1.62766 8.79021 0.916504 7 0.916504C5.20979 0.916504 3.4929 1.62766 2.22703 2.89353C0.961159 4.1594 0.25 5.87629 0.25 7.6665C0.25 10.3013 1.9257 12.6508 3.45554 14.2656C4.23579 15.0892 5.0135 15.7587 5.5953 16.222C5.8868 16.4541 6.13064 16.6357 6.30307 16.7602C6.38932 16.8225 6.45781 16.8706 6.50559 16.9037C6.52948 16.9202 6.54821 16.933 6.56139 16.942L6.57697 16.9525L6.58156 16.9556L6.58304 16.9566L6.58358 16.9569ZM5.75 7.6665C5.75 6.97615 6.30964 6.4165 7 6.4165C7.69036 6.4165 8.25 6.97615 8.25 7.6665C8.25 8.35686 7.69036 8.9165 7 8.9165C6.30964 8.9165 5.75 8.35686 5.75 7.6665ZM7 4.9165C5.48122 4.9165 4.25 6.14772 4.25 7.6665C4.25 9.18529 5.48122 10.4165 7 10.4165C8.51878 10.4165 9.75 9.18529 9.75 7.6665C9.75 6.14772 8.51878 4.9165 7 4.9165Z" fill="white"/>
+                    </svg>  
+                  {{ e.platform }}
+                </p>
+              </div>
+              <div class="eventBottomDetails2">
+                <a href="{{ e.event_link }}" target="_blank"> 
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 3H21V9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 14L21 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>   
+                </a>
+              </div>
+            </div>
+          </div>
+          {% else %}
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+              <div class="eventBoxOdd p-4" style="margin: auto; cursor: pointer;" onclick="window.open(`{{ e.event_link }}`, '_blank')">
+                <p class="small" style="margin-bottom: 0px">
+                  {{ e.start_date|date:'F' }} 
+                  {% if e.end_date %} 
+                  {% if e.start_date|date:'F' != e.end_date|date:'F' %} 
+                    - {{e.end_date|date:'F' }} 
+                  {% endif %} 
+          {% endif %}
+                </p>
+          <h2>
+            {{ e.start_date.day }} 
+            {% if e.end_date.day %} 
+              - {{ e.end_date.day}}
+            {% endif %}
+            <span class="orgTag"> {{ e.organization }} </span>
+          </h2>
+          <p class="subtitle2">{{ e.name }}</p>
+          <div class="eventBottomDetails">
+            <p class="small">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style = "margin-right: 8.58px;">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.08334 8.00016C2.08334 4.73248 4.73232 2.0835 8 2.0835C11.2677 2.0835 13.9167 4.73248 13.9167 8.00016C13.9167 11.2678 11.2677 13.9168 8 13.9168C4.73232 13.9168 2.08334 11.2678 2.08334 8.00016ZM8 0.583496C3.90389 0.583496 0.583336 3.90405 0.583336 8.00016C0.583336 12.0963 3.90389 15.4168 8 15.4168C12.0961 15.4168 15.4167 12.0963 15.4167 8.00016C15.4167 3.90405 12.0961 0.583496 8 0.583496ZM8.75 4.00016C8.75 3.58595 8.41422 3.25016 8 3.25016C7.58579 3.25016 7.25 3.58595 7.25 4.00016V8.00016C7.25 8.28424 7.4105 8.54394 7.66459 8.67098L10.3313 10.0043C10.7017 10.1896 11.1522 10.0394 11.3375 9.66891C11.5227 9.29842 11.3726 8.84792 11.0021 8.66268L8.75 7.53664V4.00016Z" fill="white"/>
+                </svg>    
+              {% if e.all_day %} 
+                All Day 
+              {% else %} 
+                {{ e.start_time }} - {{e.end_time }} 
+              {% endif %}
+            </p>
+            <p class="small">
+              <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg" style = "margin-right: 8.58px;">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M3.28769 3.95419C4.27225 2.96963 5.60761 2.4165 7 2.4165C8.39239 2.4165 9.72774 2.96963 10.7123 3.95419C11.6969 4.93876 12.25 6.27412 12.25 7.6665C12.25 9.69838 10.9257 11.6822 9.45554 13.234C8.73579 13.9938 8.0135 14.616 7.4703 15.0485C7.29117 15.1912 7.13218 15.3127 7 15.4111C6.86782 15.3127 6.70883 15.1912 6.5297 15.0485C5.9865 14.616 5.26421 13.9938 4.54446 13.234C3.0743 11.6822 1.75 9.69838 1.75 7.6665C1.75 6.27412 2.30312 4.93876 3.28769 3.95419ZM6.58358 16.9569C6.58379 16.9571 6.58397 16.9572 7 16.3332L6.58397 16.9572C6.8359 17.1252 7.1641 17.1252 7.41603 16.9572L7 16.3332C7.41603 16.9572 7.41621 16.9571 7.41642 16.9569L7.41696 16.9566L7.41844 16.9556L7.42303 16.9525L7.43861 16.942C7.45179 16.933 7.47052 16.9202 7.49441 16.9037C7.54219 16.8706 7.61068 16.8225 7.69693 16.7602C7.86936 16.6357 8.1132 16.4541 8.4047 16.222C8.9865 15.7587 9.76421 15.0892 10.5445 14.2656C12.0743 12.6508 13.75 10.3013 13.75 7.6665C13.75 5.87629 13.0388 4.1594 11.773 2.89353C10.5071 1.62766 8.79021 0.916504 7 0.916504C5.20979 0.916504 3.4929 1.62766 2.22703 2.89353C0.961159 4.1594 0.25 5.87629 0.25 7.6665C0.25 10.3013 1.9257 12.6508 3.45554 14.2656C4.23579 15.0892 5.0135 15.7587 5.5953 16.222C5.8868 16.4541 6.13064 16.6357 6.30307 16.7602C6.38932 16.8225 6.45781 16.8706 6.50559 16.9037C6.52948 16.9202 6.54821 16.933 6.56139 16.942L6.57697 16.9525L6.58156 16.9556L6.58304 16.9566L6.58358 16.9569ZM5.75 7.6665C5.75 6.97615 6.30964 6.4165 7 6.4165C7.69036 6.4165 8.25 6.97615 8.25 7.6665C8.25 8.35686 7.69036 8.9165 7 8.9165C6.30964 8.9165 5.75 8.35686 5.75 7.6665ZM7 4.9165C5.48122 4.9165 4.25 6.14772 4.25 7.6665C4.25 9.18529 5.48122 10.4165 7 10.4165C8.51878 10.4165 9.75 9.18529 9.75 7.6665C9.75 6.14772 8.51878 4.9165 7 4.9165Z" fill="white"/>
+                </svg>  
+              {{ e.platform }}
+            </p>
+          </div>
+
+          <div class="eventBottomDetails2">
+            <a href="{{ e.event_link }}" target="_blank">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 13V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V8C3 7.46957 3.21071 6.96086 3.58579 6.58579C3.96086 6.21071 4.46957 6 5 6H11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15 3H21V9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 14L21 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>   
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% endfor %} {% endif %}
+    </div>
+
+    <!-- ADVOCACY -->
+    <div class="row">
+      <h2 class="orangeText contentTitle" id="advocacy">Advocacy</h2>
+    </div>
+
+    <div class="row">
+      <p class="body">{{ lia.advocacy }}</p>
+    </div>
+
+    <!-- CORE COMPETENICES -->
+    <div class="row">
+      <h2 class="orangeText contentTitle" id="coreComp">Core Competencies</h2>
+    </div>
+
+    <div class="row">
+      <p class="body">{{ lia.core_competencies }}</p>
+    </div>
+
+    <!-- TOP 3 PROJECTS -->
+    <div class="row mb-5 contentTitle top3" id="top3">
+      <h2 class="orangeText">Top 3 Projects</h2>
+      <img src="{% static 'images/Star1indivorg.svg' %}" id="star1" alt="" class="p-0 mt-4" style="width: 119px; height: 119px; z-index: -10; position: absolute; left: 0; margin-left:-20px;">
+    </div>
+    
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-12">
+        <img src="https://drive.google.com/uc?id={{lia.project1_photo}}&authuser=0" style="object-fit: cover; background-color: #AEAEAE;" id = "top3Projects_1st" class="projectImage" alt="" />
+        <h3 class="orangeText mt-3">{{ lia.project1_name }}</h3>
+        <blockquote>{{ lia.project1_description }}</blockquote>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-12" id = "top3Projects_2nd">
+        <img src="https://drive.google.com/uc?id={{lia.project2_photo}}&authuser=0" style="object-fit: cover; background-color: #AEAEAE;" class="projectImage" alt="" />
+        <h3 class="orangeText mt-3">{{ lia.project2_name }}</h3>
+        <blockquote>{{ lia.project2_description }}</blockquote>
+      </div>
+      <div class="col-lg-4 col-md-12" id = "top3Projects_3rd">
+        <img src="https://drive.google.com/uc?id={{lia.project3_photo}}&authuser=0" style="object-fit: cover; background-color: #AEAEAE;" class="projectImage" alt="" />
+        <h3 class="orangeText mt-3">{{ lia.project3_name }}</h3>
+        <blockquote>{{ lia.project3_description }}</blockquote>
+      </div>
+    </div>
+
+    <img src="{% static 'images/Group 1.svg' %}" alt="" id="star2" style="position: absolute; right:0; margin-right: -110px;">
+ 
+    <!-- MEMBER STORIES  -->
+    <div class="row">
+      <h2 class="orangeText contentTitle" id="memberStories">Member Stories</h2>
+
+      <div class="row p-0 mt-5 mx-auto" id="firstRowMember">
+        <div
+          class="col-sm-2 mx-auto"
+          id="firstRowPic"
+          style="height: 181px; width: 181px"
+        >
+          <img
+            src="https://drive.google.com/uc?id={{lia.memberstory1_photo}}&authuser=0"
+            class="memberStoryImage memberImageCropper"
+            alt=""
+            style="object-fit: cover;"
+          />
+        </div>
+
+        <div class="col-md-9 my-auto mx-auto" id="firstRowParagraph">
+          <div class="my-auto" id="firstRowContainer">
+            <p id="firstRowContent">{{lia.memberstory1_content|safe}}</p>
+            <p class="memberName" id="firstRowName">
+              - {{lia.memberstory1_name}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row p-0 mt-5 mx-auto" id="secondRowMember">
+        <div class="col-md-9 mx-auto my-auto" id="secondRowParagraph">
+          <div class="my-auto" id="secondRowContainer">
+            <p class="memberStoriesRight" id="secondRowContent">
+              {{lia.memberstory2_content|safe}}
+            </p>
+            <p class="memberName memberStoriesRight" id="secondRowName">
+              - {{lia.memberstory2_name}}
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="col-md-2 mx-auto"
+          style="height: 181px; width: 181px"
+          id="secondRowPic"
+        >
+          <img
+            src="https://drive.google.com/uc?id={{lia.memberstory2_photo}}&authuser=0"
+            class="memberStoryImage memberImageCropper"
+            alt=""
+            style="object-fit: cover;"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock content %} {% block script %}
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+    integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+    crossorigin="anonymous"
+  ></script>
+
+  <script>
+    var dropdownShown = false;
+    function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+      dropdownShown= !dropdownShown;
+      
+
+      if (dropdownShown == true){
+        document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#714CF7";
+      }
+      else {
+        document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#3B23EE";
+      }
+    }
+
+    window.onclick = function (event) {
+      if (!event.target.matches(".dropbtn")) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+            
+            dropdownShown = false;
+            document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#3B23EE";
+          }
+        }
+      }
+    };
+
+    function checkLink(id) {
+      var element = document.getElementById(id);
+      if (element.href.includes("None")) {
+        element.style.display = "none";
+      }
+    }
+    checkLink("email");
+    checkLink("website");
+    checkLink("fb");
+    checkLink("ig");
+    checkLink("twt");
+
+    function fixLogo() {
+      var orglogoContainer = document.getElementById("orgLogoContainer");
+      var ddcontainer = document.getElementById("ddcontainer");
+
+      if (window.innerWidth >= 992) {
+        ddcontainer.classList = "d-flex justify-content-end w-100 dd";
+        orglogoContainer.classList = "col-3 d-flex align-items-center justify-content-center";
+        normalEvent();
+      } else if (window.innerWidth <= 991) {
+        if (window.innerWidth <= 768) {
+        ddcontainer.classList = "d-flex justify-content-end w-100 ddMobile";
+        orglogoContainer.classList = "row d-flex align-items-center justify-content-center mb-5";
+        
+      } else if (window.innerWidth > 768) {
+        ddcontainer.classList = "d-flex justify-content-end w-100 dd";
+        orglogoContainer.classList = "col-3 d-flex align-items-center justify-content-center";
+      }
+        twoColumnsEvent();
+      }
+    }
+    window.addEventListener("load", fixLogo);
+    window.addEventListener("resize", fixLogo);
+    function normalEvent() {
+      
+      var counter = 1;
+      const events = document.getElementById("eventsFrame");
+      var children = events.children;
+      for (var i = 0; i < children.length; i++) {
+        var actualChild = children[i].children[0];
+        if (counter % 5 == 0) {
+          counter += 1;
+        }
+        if (counter % 2 == 0) {
+          actualChild.style.transition = "0s";
+          actualChild.style.backgroundColor = "#EA6710";
+          actualChild.style.transition = "0.25s";
+        } else {
+          actualChild.style.transition = "0s";
+          actualChild.style.backgroundColor = "#4752A2";
+          actualChild.style.transition = "0.25s";
+        }
+        counter += 1;
+      }
+    }
+
+    function twoColumnsEvent() {
+      
+      var counter = 1;
+      const events = document.getElementById("eventsFrame");
+      var children = events.children;
+      for (var i = 0; i < children.length; i++) {
+        var actualChild = children[i].children[0];
+        if (counter % 3 == 0) {
+          counter += 1;
+        }
+        if (counter % 2 == 0) {
+          actualChild.style.transition = "0s";
+          actualChild.style.backgroundColor = "#EA6710";
+          actualChild.style.transition = "0.25s";
+        } else {
+          actualChild.style.transition = "0s";
+          actualChild.style.backgroundColor = "#4752A2";
+          actualChild.style.transition = "0.25s";
+        }
+        counter += 1;
+      }
+    }
+  </script>
+  <script>
+    // TABLE OF CONTENTS DROP DOWN
+    var doublearrow1 = document.getElementById("doublearrow1");
+    var doublearrow2 = document.getElementById("doublearrow2");
+    var doublearrow3 = document.getElementById("doublearrow3");
+    var doublearrow4 = document.getElementById("doublearrow4");
+    var doublearrow5 = document.getElementById("doublearrow5");
+    var latestEvents = document.getElementById("latestEvents");
+    var advocacy = document.getElementById("advocacy");
+    var coreComp = document.getElementById("coreComp");
+    var top3 = document.getElementById("top3");
+    var memberStories = document.getElementById("memberStories");
+    var latestEventsPosition,
+      advocacyPosition,
+      coreCompPosition,
+      top3Position,
+      memberStoriesPosition;
+
+    function setTops() {
+      latestEventsPosition = latestEvents.offsetTop;
+      advocacyPosition = advocacy.offsetTop;
+      coreCompPosition = coreComp.offsetTop;
+      top3Position = top3.offsetTop;
+      memberStoriesPosition = memberStories.offsetTop;
+    }
+    function trigger() {
+      var currentScrollY = window.scrollY + 2;
+      if (currentScrollY < latestEventsPosition) {
+        doublearrow1.style.opacity = "0";
+        doublearrow2.style.opacity = "0";
+        doublearrow3.style.opacity = "0";
+        doublearrow4.style.opacity = "0";
+        doublearrow5.style.opacity = "0";
+      } else if (
+        currentScrollY >= latestEventsPosition &&
+        currentScrollY < advocacyPosition
+      ) {
+        doublearrow1.style.opacity = "100";
+        doublearrow2.style.opacity = "0";
+        doublearrow3.style.opacity = "0";
+        doublearrow4.style.opacity = "0";
+        doublearrow5.style.opacity = "0";
+      } else if (
+        currentScrollY >= advocacyPosition &&
+        currentScrollY < coreCompPosition
+      ) {
+        doublearrow1.style.opacity = "0";
+        doublearrow2.style.opacity = "100";
+        doublearrow3.style.opacity = "0";
+        doublearrow4.style.opacity = "0";
+        doublearrow5.style.opacity = "0";
+      } else if (
+        currentScrollY >= coreCompPosition &&
+        currentScrollY < top3Position
+      ) {
+        doublearrow1.style.opacity = "0";
+        doublearrow2.style.opacity = "0";
+        doublearrow3.style.opacity = "100";
+        doublearrow4.style.opacity = "0";
+        doublearrow5.style.opacity = "0";
+      } else if (
+        currentScrollY >= top3Position &&
+        currentScrollY < memberStoriesPosition
+      ) {
+        doublearrow1.style.opacity = "0";
+        doublearrow2.style.opacity = "0";
+        doublearrow3.style.opacity = "0";
+        doublearrow4.style.opacity = "100";
+        doublearrow5.style.opacity = "0";
+      } else if (currentScrollY >= memberStoriesPosition) {
+        doublearrow1.style.opacity = "0";
+        doublearrow2.style.opacity = "0";
+        doublearrow3.style.opacity = "0";
+        doublearrow4.style.opacity = "0";
+        doublearrow5.style.opacity = "100";
+      }
+    }
+    window.addEventListener("load", setTops);
+    window.addEventListener("resize", setTops);
+    window.addEventListener("scroll", trigger);
+
+    let static = document.getElementById('staticindivorg')
+    let star1 = document.getElementById('star1')
+    let star2 = document.getElementById('star2')
+
+    function staticMobile(){
+      static.classList.add('displaynone')
+      star1.classList.add('displaynone')
+      star2.classList.add('displaynone')
+      top3.classList.remove('mb-5')
+    }
+
+    function removestaticMobile(){
+      static.classList.remove('displaynone')
+      star1.classList.remove('displaynone')
+      star2.classList.remove('displaynone')
+      top3.classList.add('mb-5')
+    }
+
+    function staticFormat(){
+      if(window.innerWidth <= 767){
+          staticMobile()
+      }
+      else if(window.innerWidth > 767){
+          removestaticMobile()
+      }
+    }
+
+    window.addEventListener('resize', staticFormat)
+    window.addEventListener('load', staticFormat)
+
+  </script>
+  <script>
+    let firstRowPic = document.getElementById("firstRowPic");
+    let firstRowParagraph = document.getElementById("firstRowParagraph");
+    let firstRowMember = document.getElementById("firstRowMember");
+    let firstRowContent = document.getElementById("firstRowContent");
+    let firstRowName = document.getElementById("firstRowName");
+    let firstRowContainer = document.getElementById("firstRowContainer");
+
+    let secondRowPic = document.getElementById("secondRowPic");
+    let secondRowParagraph = document.getElementById("secondRowParagraph");
+    let secondRowMember = document.getElementById("secondRowMember");
+    let secondRowContent = document.getElementById("secondRowContent");
+    let secondRowName = document.getElementById("secondRowName");
+    let secondRowContainer = document.getElementById("secondRowContainer");
+
+    function memberStoriesMobile() {
+      firstRowContent.classList.add("memberStoriesCenter");
+      firstRowName.classList.add("memberStoriesCenter");
+      firstRowParagraph.classList.add("mt-4");
+      firstRowContainer.classList.add("mx-2");
+
+      secondRowMember.classList.add("flex-column-reverse");
+      secondRowContent.classList.remove("memberStoriesRight");
+      secondRowName.classList.remove("memberStoriesRight");
+      secondRowContent.classList.add("memberStoriesCenter");
+      secondRowName.classList.add("memberStoriesCenter");
+      secondRowParagraph.classList.add("mt-4");
+      secondRowContainer.classList.add("mx-2");
+    }
+
+    function removeMemberStoriesMobile() {
+      firstRowContent.classList.remove("memberStoriesCenter");
+      firstRowName.classList.remove("memberStoriesCenter");
+      firstRowParagraph.classList.remove("mt-4");
+      firstRowContainer.classList.remove("mx-2");
+
+      secondRowMember.classList.remove("flex-column-reverse");
+      secondRowContent.classList.remove("memberStoriesCenter");
+      secondRowName.classList.remove("memberStoriesCenter");
+      secondRowContent.classList.add("memberStoriesRight");
+      secondRowName.classList.add("memberStoriesRight");
+      secondRowParagraph.classList.remove("mt-4");
+      secondRowContainer.classList.remove("mx-2");
+    }
+
+    function memberStoriesFormat() {
+      if (window.innerWidth <= 991) {
+        
+        
+        document.getElementById("top3Projects_1st").classList.add("mt-5");
+        document.getElementById("top3Projects_2nd").classList.add("mt-5");
+        document.getElementById("top3Projects_3rd").classList.add("mt-5");
+        memberStoriesMobile();
+      } else if (window.innerWidth > 991) {
+        
+        document.getElementById("top3Projects_1st").classList.remove("mt-5");
+        document.getElementById("top3Projects_2nd").classList.remove("mt-5");
+        document.getElementById("top3Projects_3rd").classList.remove("mt-5");
+        removeMemberStoriesMobile();
+      }
+    }
+
+    window.addEventListener("resize", memberStoriesFormat);
+    window.addEventListener("load", memberStoriesFormat);
+  </script>
+
+<script>
+  
+</script>
+  {% endblock %}
+</body>

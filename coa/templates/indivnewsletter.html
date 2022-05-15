@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>
+    {{ lia.title }}
+</title>
+{% endblock %}
+
+<body>
+{% block content %}
+    <img src="{% static 'images/Newsletters_Article Post_Decor.svg' %}" alt="" class="indivnewsletterStatic" id="staticimage">
+    <div class = "container">
+        <div class="row orgBack" style="width: fit-content;">
+            <a href="javascript: history.go(-1)" style="cursor: pointer;"><i class="fa-solid fa-arrow-left"></i><label>back</label></a>
+        </div>
+        <p class="mt-4"><span class="newsletterCategory"><label>{{ lia.category }}</label></span></p>
+        <div class="row">
+            <h1 style="color: #EA6710;" class="hometitle">{{ lia.title}}</h1>
+        </div>
+        <p class="authorDate">By {{ lia.author }} • {{lia.date.day}} {{lia.date|date:'F'}} {{lia.date.year}}</p>
+
+        <div class="row justify-content-center mt-4 mb-3 ">
+            <img src="https://drive.google.com/uc?id={{lia.photo}}&authuser=0" class="indivnewsletterImg" alt="">
+        </div>
+
+        <p class="d-flex justify-content-center indivnewsletterCaption">{{lia.photoCaption}}</p>
+
+        <div class="row" style="margin-bottom: 128px; margin-top: 48px;">
+            <p>{{ lia.content|safe }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    let staticimage = document.getElementById('staticimage')
+
+    function mobilestatic(){
+        staticimage.classList.add('visually-hidden')
+    }
+
+    function removemobilestatic(){
+        staticimage.classList.remove('visually-hidden')
+    }
+
+    function staticimageformat(){
+        if(window.innerWidth <= 767){
+            mobilestatic()
+        }
+        else if(window.innerWidth > 767){
+            removemobilestatic()
+        }
+    }
+
+    window.addEventListener('resize', staticimageformat)
+    window.addEventListener('load', staticimageformat)
+</script>
+{% endblock script %}
+</body>

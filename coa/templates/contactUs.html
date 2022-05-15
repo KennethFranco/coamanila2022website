@@ -1,0 +1,191 @@
+{% extends "base.html" %} {% load static %}
+
+<html lang="en">
+  <head>
+    {% block title %}
+    <title>Contact Us</title>
+    {% endblock %}
+  </head>
+  <body>
+    {% block content %}
+    <div class="container">
+      <div class="row w-100" id="totalContainer">
+        <!-- CONTACT US -->
+        <div class="col-6" id="contactUsDiv">
+          <div class="contactUsCard shadow" id="contactUsCard">
+            <!-- TITLE -->
+            <div class="row">
+              <h3 class="p-0">Contact Us</h3>
+            </div>
+            <form action="{% url 'contactUs' %}" method="POST">
+              {% csrf_token %}
+
+              <!-- NAME -->
+              <div class="row">
+                <label for="name" id="nameLabel">Name</label>
+                <input type="text" id="name" name="name" required value="{{prevName}}"/>
+              </div>
+
+              <!-- SUBJECT -->
+              <div class="row">
+                <label for="subject" id="subjectLabel">Subject</label>
+                <input type="text" id="subject" name="subject" required value="{{prevSubj}}"/>
+              </div>
+
+              <!-- EMAIL -->
+              <div class="row">
+                <label for="fromEmail" id="fromEmailLabel">Email</label>
+                <input type="email" id="fromEmail" name="fromEmail" required value="{{prevFromEmail}}"/>
+              </div>
+
+              <!-- MESSAGE -->
+              <div class="row">
+                <label for="msg" id="msgLabel">Message</label>
+                <textarea name="msg" id="msg" cols="30" rows="5">{{prevMsg}}</textarea>
+              </div>
+
+              <!-- SEND BUTTON -->
+              <div class="row mt-4">
+                <div class="col-3 p-0">
+                  <input type="submit" value="send" id="sendEmail" class="p-2"/>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- GET IN TOUCH -->
+        <div class="col-sm-6" id="getInTouchDiv">
+          <div class="getInTouchContainer" id="getInTouchContainer">
+            <!-- TITLE -->
+            <h2 class="orangeText">Get in touch.</h2>
+            <p class="body">
+              Have any questions, concerns, or suggestions for us? Feel free to
+              send us a message and we'll get back to you shortly.
+            </p>
+
+            <!-- ICONS -->
+            <a href="mailto:coa.ls@obf.ateneo.edu" style="text-decoration: none">
+              <button class="btn-circle-contactUs">
+                <i class="fa-solid fa-envelope fa-lg" id="mailiconbutton"></i>
+              </button>
+            </a>
+
+            <a href="https://fb.com/coamanila" style="text-decoration: none" target="_blank">
+              <button class="btn-circle-contactUs">
+                <i class="fa-brands fa-facebook-f"></i>
+              </button>
+            </a>
+
+            <a href="https://twitter.com/coamanila" style="text-decoration: none" target="_blank">
+              <button class="btn-circle-contactUs">
+                <i class="fa-brands fa-twitter"></i>
+              </button>
+            </a>
+
+            <a href="https://instagram.com/coamanila" style="text-decoration: none" target="_blank">
+              <button class="btn-circle-contactUs">
+                <i class="lni lni-instagram-filled"></i>
+              </button>
+            </a>
+          </div>
+
+          <!-- KOALA -->
+          <div class="getInTouchImg" id="getInTouchImg">
+            <img src="{% static 'images/contactUs_illust.png' %}" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %} 
+    {% block script %}
+    <script src="https://kit.fontawesome.com/c735b10dd8.js"crossorigin="anonymous"></script>
+    <script>
+      let nameBox = document.getElementById("name");
+      let subjBox = document.getElementById("subject");
+      let fromEmailBox = document.getElementById("fromEmail");
+      let msgBox = document.getElementById("msg");
+      let sendEmailButton = document.getElementById("sendEmail");
+      let container = document.getElementById("totalContainer");
+      let contactUsDiv = document.getElementById("contactUsDiv");
+      let getInTouchDiv = document.getElementById("getInTouchDiv");
+      let getInTouchContainer = document.getElementById("getInTouchContainer");
+      let contactUsCard = document.getElementById("contactUsCard");
+      let img = document.getElementById("getInTouchImg");
+      if ("{{ message }}" == "1") {
+        sendEmailButton.disabled = true;
+        sendEmailButton.style.color = "#666666";
+        sendEmailButton.style.backgroundColor = "#D3D3D3";
+        sendEmailButton.style.border = "none";
+        sendEmailButton.value = "Sent!";
+        nameBox.disabled = true;
+        subjBox.disabled = true;
+        fromEmailBox.disabled = true;
+        msgBox.disabled = true;
+        msgBox.style.resize = "none";
+
+      }
+      
+
+      // NORMAL
+      function normalFormat() {
+        // FORMAT OF CONTACT US AND GET IN TOUCH
+        container.classList = "row";
+        contactUsDiv.classList = "col-6";
+        getInTouchDiv.classList = "col-sm-6";
+      }
+
+      function normalSpacing() {
+        // MARGINS
+        getInTouchContainer.style.marginLeft = "-1%";
+        getInTouchContainer.style.marginRight = "20%";
+        contactUsCard.style.marginRight = "15%";
+        contactUsCard.style.marginLeft = "2%";
+        getInTouchContainer.style.marginTop = "";
+      }
+
+      // MOBILE
+      function mobileFormat() {
+        // FORMAT OF CONTACT US AND GET IN TOUCH
+        container.classList = "row flex-column-reverse";
+        contactUsDiv.classList = "col";
+        getInTouchDiv.classList = "col";
+        getInTouchContainer.style.marginLeft = "3rem";
+      }
+
+      function mobileSpacing() {
+        // MARGINS
+        getInTouchContainer.style.marginRight = "1rem";
+        getInTouchContainer.style.marginLeft = "1rem";
+        getInTouchContainer.style.marginTop = "0rem";
+        contactUsCard.style.marginRight = "1rem";
+        contactUsCard.style.marginLeft = "1rem";
+      }
+
+      function format() {
+        if (window.innerWidth <= screen.width / 2 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+          mobileFormat();
+          if (window.innerWidth <= 480) {
+            img.style.display = "none";
+            mobileSpacing();
+          } else if (window.innerWidth > 480) {
+            img.style.display = "";
+            normalSpacing();
+          }
+        } else if (window.innerWidth > screen.width / 2) {
+          img.style.display = "";
+          normalFormat();
+          normalSpacing();
+        }
+      }
+      window.addEventListener("load", format);
+      window.addEventListener("resize", format);
+
+
+      if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+      }
+    </script>
+    {% endblock %}
+  </body>
+</html>

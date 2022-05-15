@@ -1,0 +1,490 @@
+{% extends 'base.html' %} {% load static %}
+<head>
+  {% block title %}
+  <title>Services</title>
+  {% endblock %}
+  <script
+    src="https://kit.fontawesome.com/c735b10dd8.js"
+    crossorigin="anonymous"
+  ></script>
+</head>
+<body>
+  {% block content %}
+  <div class="container">
+    <!--  STATIC IMAGE -->
+    <img src="{% static 'images/Services_Stars.svg' %}" class="starservices" style="margin-top: 20px; z-index: -100;" id="starservices">
+
+    <!-- TITLE -->
+    <div class="row mb-5">
+      <h2 class="orangeText">Always in Service</h2>
+      <p class="body">
+        Avail of the different services that COA-M offers to organizations!
+      </p>
+    </div>
+
+    <!-- SERVICES DROPDOWN -->
+    <div class="row">
+      <div class="col-2 d-flex align-items-center filterContainer">
+          <div class = "dropdownSpecial4">
+            <p onclick="myFunction4()" class="dropbtn4 body d-flex align-items-center" id="getServicesFilter">
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" style = "margin-right: 16px;">
+                <path id = "servicesMenuIcon" d="M5.99987 10H9.99987C10.2547 10.0003 10.4999 10.0979 10.6852 10.2729C10.8706 10.4478 10.9821 10.687 10.997 10.9414C11.012 11.1958 10.9292 11.4464 10.7656 11.6418C10.602 11.8373 10.37 11.9629 10.1169 11.993L9.99987 12H5.99987C5.74499 11.9997 5.49984 11.9021 5.3145 11.7272C5.12916 11.5522 5.01763 11.3131 5.0027 11.0586C4.98776 10.8042 5.07054 10.5536 5.23413 10.3582C5.39772 10.1627 5.62977 10.0371 5.88287 10.007L5.99987 10H9.99987H5.99987ZM3.99987 5.00001H11.9999C12.2547 5.00029 12.4999 5.09789 12.6852 5.27286C12.8706 5.44782 12.9821 5.68696 12.997 5.9414C13.012 6.19584 12.9292 6.44639 12.7656 6.64184C12.602 6.83729 12.37 6.9629 12.1169 6.99301L11.9999 7.00001H3.99987C3.74499 6.99972 3.49984 6.90213 3.3145 6.72716C3.12916 6.55219 3.01763 6.31305 3.0027 6.05861C2.98776 5.80417 3.07054 5.55363 3.23413 5.35818C3.39772 5.16272 3.62977 5.03711 3.88287 5.00701L3.99987 5.00001H11.9999H3.99987ZM0.999868 7.62939e-06H14.9999C15.2547 0.000290337 15.4999 0.0978865 15.6852 0.272856C15.8706 0.447825 15.9821 0.686961 15.997 0.941402C16.012 1.19584 15.9292 1.44639 15.7656 1.64184C15.602 1.83729 15.37 1.9629 15.1169 1.99301L14.9999 2.00001H0.999868C0.744989 1.99972 0.499836 1.90213 0.3145 1.72716C0.129164 1.55219 0.0176337 1.31305 0.0026966 1.05861C-0.0122405 0.804171 0.0705431 0.553628 0.234133 0.358175C0.397724 0.162722 0.629773 0.0371112 0.882868 0.0070076L0.999868 7.62939e-06H14.9999H0.999868Z" fill="#3B23EE"/>
+                </svg>    
+                FILTER
+          </p>
+            <div id = "myDropdown4" class = "dropdown-content4">
+              <form id = "checkerForm">
+                {% for s in serviceTags %}
+                {% if forloop.counter0 == 0 %}
+                <p onclick="activateCheckBox(id = `{{forloop.counter0}}`)" class = "body dropdownSpecialItem" style = "height: 40px; margin-top: 12px; margin-bottom: 0px;">
+                  <input onClick="this.checked=!this.checked;" id="{{forloop.counter0}}-tagNumber" class = "checkerInput" type="checkbox" style="width: 18px; height: 18px; margin-left: 15px"/>
+                  <span id="{{forloop.counter0}}spanNumber" class = "checkerSpan" style = "padding-left: 5px;">{{ s.title }}</span>
+                </p>
+                {% else %}
+                <p onclick="activateCheckBox(id = `{{forloop.counter0}}`)" class = "body dropdownSpecialItem" style = "height: 40px; margin-bottom: 0px;">
+                  <input onClick="this.checked=!this.checked;" id="{{forloop.counter0}}-tagNumber"class = "checkerInput"  type="checkbox" style="width: 18px; height: 18px; margin-left: 15px"/>
+                  <span id="{{forloop.counter0}}spanNumber" class = "checkerSpan" style = "padding-left: 5px;">{{ s.title }}</span>
+                </p>
+                {% endif %}
+              {% endfor %}
+              </form>
+              <a onclick="applyFilters()" class="dropdown-item body secondDropdownBody p-0" style="margin-top: 8px">
+                <button style="width: 100%; height: 40px">
+                  apply filters
+                </button>
+              </a>
+            </div>
+        </div>
+        </div>
+      <div class="col-xl-10 col-lg-12 p-3 d-flex align-items-center">
+        <p class="serviceTagContainer" id="servicesAppliedTags"></p>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="mt-5 mb-5" id="allServicesFrame">
+      {% for s in services %}
+      <div class="row mt-5 mb-5 serviceCard">
+        <div class="col-2 col-sm-1 text-center">
+          <img src="{% static 'images/Services_List Star.svg' %}" alt=""/>
+        </div>
+        <div class="col-10 col-sm-11">
+          <div class="row" style="width: 98%">
+            <h2 class="orangeText">{{ s.name }}</h2>
+            <p>{{ s.body|safe }}</p>
+          </div>
+          <div class="row">
+            <div class="col-sm-10 servicesTagList serviceTagContainer">
+              {% for tag in s.tags.all %}
+              <span
+                class="serviceTag label"
+                style="margin-right: 8px; margin-bottom: 8px"
+              >
+                {{ tag }}
+              </span>
+              {% endfor %}
+            </div>
+            <div class="col-2 availButtonContainer">
+              <div class="subContainer rightButton">
+                <a href="{{s.link}}" target="_blank" rel="noreferrer noopener"><button style="min-width: 128px; min-height: 40px">
+                    Avail
+                </button></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr class="w-100" style="height: 1px" />
+      {% endfor %}
+    </div>
+    <div
+      class="row"
+      id="servicesNoResults"
+      style="display: none; margin-bottom: 128px"
+    >
+      <img
+        class="text-center"
+        src="{% static 'images/coala.png' %}"
+        alt="elo"
+        style="
+          margin: 0 auto;
+          display: block;
+          width: 284px;
+          height: 284px;
+          margin-bottom: 20px;
+        "
+      />
+      <p class="subtitle1 blueberryText text-center">
+        Sorry! We don’t have a service for that right now...
+      </p>
+    </div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+    integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    var servicesShown = false;
+    // hover stuff
+    document.getElementById("getServicesFilter").onmouseover = function(){
+      
+      document.getElementById("servicesMenuIcon").setAttribute("fill", "white")
+    }
+
+    // FIRST DROPDOWN
+    function myFunction4() {
+      servicesShown = !servicesShown;
+      
+      document.getElementById("myDropdown4").classList.toggle("show");
+
+      if (servicesShown == true){
+        document.getElementsByClassName("dropbtn4")[0].style.color = "white";
+        document.getElementsByClassName("dropbtn4")[0].style.backgroundColor = "#3B23EE";
+      }
+      else {
+        document.getElementsByClassName("dropbtn4")[0].style.color = "#3B23EE";
+        document.getElementsByClassName("dropbtn4")[0].style.backgroundColor = "transparent";
+      }
+
+    }
+
+    document.getElementById("getServicesFilter").onmouseout = function(){
+      if (servicesShown == false) {
+        document.getElementById("servicesMenuIcon").setAttribute("fill", "#3b23ee")
+      }
+    }
+
+    window.onclick = function (event) {
+      var checker1 = event.target.matches(".dropdownSpecialItem");
+      var checker2 = event.target.matches(".dropbtn4");
+      var checker3 = event.target.matches(".checkerInput");
+      var checker4 = event.target.matches(".checkerSpan");
+
+      if (checker1 == false && checker2 == false && checker3 == false && checker4 == false){
+        var dropdowns = document.getElementsByClassName("dropdown-content4");
+        for (var i = 0; i < dropdowns.length; i++){
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+            servicesShown = false;
+            document.getElementsByClassName("dropbtn4")[0].style.color = "#3b23ee";
+            
+            document.getElementsByClassName("dropbtn4")[0].style.backgroundColor = "transparent";
+            document.getElementById("servicesMenuIcon").setAttribute("fill", "#3b23ee")
+          }
+        }
+      }
+      // 
+      // 
+      // if (checker1 == false){
+      //   
+      // }
+      // if (event.target.matches(".dropdownSpecialItem")){
+      //   
+      // }
+      // else if (!event.target.matches(".dropbtn4")) {
+      //   var dropdowns = document.getElementsByClassName("dropdown-content4");
+      //   var i;
+      //   for (i = 0; i < dropdowns.length; i++) {
+      //     var openDropdown = dropdowns[i];
+      //     if (openDropdown.classList.contains("show")) {
+      //       openDropdown.classList.remove("show");
+      //     }
+      //   }
+      // } else{
+      //   
+      // }
+    };
+
+    filteredList = [];
+    filtersExist = false;
+
+    // If first time for user, sets local storage services filter to none
+    if (localStorage.getItem("servicesFilters") === null) {
+      localStorage.setItem("servicesFilters") === "";
+    }
+
+    var filters = localStorage.getItem("servicesFilters");
+    
+
+    // Checks if filters are not "", if so, changes filtersExist to true
+    // if (filters != "") {
+    //   filtersExist = true;
+    // }
+
+    // 
+
+    // Sets initial filters
+    // function setInitialFilters() {
+    //   var filters = localStorage.getItem("servicesFilters");
+    //   //   applyFilters();
+    // }
+
+    // if (filtersExist == true) {
+    //   setInitialFilters();
+    // }
+
+    function removeAllChildNodes(parent) {
+      while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+      }
+    }
+
+    function activateCheckBox(id) {
+      actualId = id + "-tagNumber";
+      checker = document.getElementById(actualId).checked;
+      if (checker == true) {
+        document.getElementById(actualId).checked = false;
+      } else {
+        document.getElementById(actualId).checked = true;
+      }
+    }
+
+    function applyFilters() {
+      document.getElementsByClassName("dropbtn4")[0].style.color = "#3b23ee";
+      
+      document.getElementsByClassName("dropbtn4")[0].style.backgroundColor = "transparent";
+      document.getElementById("servicesMenuIcon").setAttribute("fill", "#3b23ee")
+      filteredList = [];
+      children = document.getElementById("myDropdown4").children[0].children;
+      
+      for (var i = 0; i < children.length; i++) {
+        var actualChild = children[i].children[0];
+        
+        var childIDSplit = actualChild.id.split("-")[0];
+        var childID = childIDSplit + "spanNumber";
+        
+        var checker = actualChild.checked;
+        
+
+        if (checker == true) {
+          var addedFilter = document.getElementById(childID).textContent;
+          
+          filteredList.push(addedFilter);
+          
+        }
+      }
+      localStorage.setItem("servicesFilters", filteredList);
+      
+      visualizeFilters();
+    }
+
+    function visualizeFilters() {
+      removeAllChildNodes(document.getElementById("servicesAppliedTags"));
+      var counter = 0;
+      for (var i = 0; i < filteredList.length; i++) {
+        var filterSpan = document.createElement("span");
+        filterSpan.classList.add("serviceTag");
+        filterSpan.classList.add("label");
+        filterSpan.style.marginRight = "8px";
+        filterSpan.style.color = "#535353";
+        filterSpan.textContent = filteredList[i];
+
+        var x = document.createElement("span");
+        x.textContent = "|"
+        x.style.color = "#AEAEAE";
+        x.style.marginLeft = "8px";
+        x.style.marginRight = "8px";
+        filterSpan.appendChild(x);
+
+        var filter = filteredList[i];
+        // var y = document.createElement("IMG");
+        var y = document.createElement("span");
+        y.textContent = "X";
+        // y.src = "../static/images/cross.png";
+        y.style.width = "8px";
+        y.style.height = "8px";
+        y.style.cursor = "pointer";
+
+        function someFunc(index) {
+          y.addEventListener("click", function () {
+            
+            children = document.getElementById("myDropdown4").children[0].children;
+            
+            
+            var counter = 0;
+            for (var i = 0; i < children.length; i++) {
+              spanNumber = counter + "spanNumber";
+              checker = document.getElementById(spanNumber).textContent;
+
+              if (filteredList[index] === checker) {
+                
+                // children[i].checked = false;
+                children[i].children[0].checked = false;
+              }
+              counter += 1;
+            }
+            applyFilters();
+          });
+        }
+
+        someFunc(i);
+
+        filterSpan.appendChild(y);
+        document.getElementById("servicesAppliedTags").appendChild(filterSpan);
+      }
+      if (filteredList.length != 0) {
+        var clearSpan = document.createElement("span");
+        clearSpan.classList.add("buttonText");
+        clearSpan.textContent = "CLEAR";
+        clearSpan.style.color = "#3B23EE";
+        clearSpan.style.marginTop = "8px";
+        clearSpan.style.marginLeft = "24px";
+        clearSpan.style.cursor = "pointer";
+        clearSpan.addEventListener("click", function () {
+          
+          children = document.getElementById("myDropdown4").children[0].children;
+          
+          for (var i = 0; i < children.length; i++) {
+            children[i].children[0].checked = false;
+          }
+          applyFilters();
+        });
+        document.getElementById("servicesAppliedTags").appendChild(clearSpan);
+        visualizeServices();
+      } else {
+        document.getElementById("servicesNoResults").style.display = "none";
+        
+        
+        children = document.getElementById("allServicesFrame").children;
+        
+        for (i = 0; i < children.length; i++) {
+          
+          children[i].style.display = "";
+        }
+      }
+    }
+
+    function visualizeServices() {
+      var atLeastOneOrg = false;
+      children = document.getElementById("allServicesFrame").children;
+      // iterates through list
+      for (i = 0; i < children.length; i++) {
+        // checks if DIV, not HR
+        if (children[i].nodeName == "DIV") {
+          
+          tagsList = [];
+          tags = children[i].children[1].children[1].children[0].children;
+
+          // pushes tags to tags list
+          for (j = 0; j < tags.length; j++) {
+            tagsList.push(tags[j].textContent.trim());
+          }
+          
+          requiredLength = filteredList.length;
+          
+          checkerLength = 0;
+
+          for (k = 0; k < tagsList.length; k++) {
+            
+            for (l = 0; l < filteredList.length; l++) {
+              
+              if (filteredList[l] == tagsList[k]) {
+                checkerLength += 1;
+              }
+            }
+          }
+
+          
+          if (checkerLength >= requiredLength) {
+            
+            atLeastOneOrg = true;
+            children[i].style.display = "";
+            children[i + 1].style.display = "";
+          } else {
+            
+            children[i].style.display = "none";
+            children[i + 1].style.display = "none";
+          }
+        }
+      }
+      if (atLeastOneOrg == false) {
+        document.getElementById("servicesNoResults").style.display = "";
+      } else {
+        document.getElementById("servicesNoResults").style.display = "none";
+      }
+ 
+
+    }
+  </script>
+
+  <script>
+    var availButtonContainer = document.getElementsByClassName(
+      "availButtonContainer"
+    );
+    var subContainer = document.getElementsByClassName("subContainer");
+    function availButtonRearrange() {
+      
+      if(window.innerWidth >= 768){
+        for (i of availButtonContainer) {
+          i.classList = "availButtonContainer";
+        }
+        for(j of subContainer){
+          j.classList = "subContainer rightButton";
+        }
+      }
+      else if(window.innerWidth < 768){
+        for (i of availButtonContainer) {
+          i.classList = "row availButtonContainer mt-3";
+        }
+        for(j of subContainer){
+          j.classList = "subContainer d-flex justify-content-end";
+        }
+      }
+    }
+    window.addEventListener("resize", availButtonRearrange);
+    window.addEventListener("load", availButtonRearrange);
+
+  </script>
+
+  <script>
+    let starservices = document.getElementById('starservices')
+
+    function starservicesMobile(){
+      starservices.classList.remove('starservices')
+      starservices.classList.add('starservicesnone')
+    }
+
+    function removestarservicesMobile(){
+      starservices.classList.remove('starservicesnone')
+      starservices.classList.add('starservices')
+    }
+
+    function starservicesFormat(){
+      if(window.innerWidth <= 991){
+          starservicesMobile()
+        }
+        else if(window.innerWidth > 991){
+          removestarservicesMobile()
+        }
+      }
+
+    window.addEventListener('resize', starservicesFormat)
+    window.addEventListener('load', starservicesFormat)
+  </script>
+  <script>
+    let serviceCard = document.querySelectorAll(".serviceCard")
+    let servicesNoResults = document.getElementById("servicesNoResults")
+    
+    if(serviceCard.length <= 0){
+      servicesNoResults.style.display = "block"
+    }
+    else if(serviceCard.length > 0){
+      servicesNoResults.style.display = "none"
+    }
+  </script>
+
+  {% endblock %}
+</body>

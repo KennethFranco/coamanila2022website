@@ -1,0 +1,257 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>About</title>
+{% endblock %} {% block content %}
+<div class="container">
+  <div class="row">
+    <img
+      class="mx-auto aboutlogo2"
+      src="{% static 'images/Illustration.svg' %}"
+      alt=""
+      id="aboutlogo"
+    />
+
+    <div class="col-xl-6 col-12 my-auto mx-auto">
+      <h2 class="orangeText">What is COA - M?</h2>
+      {{aboutUsDescription.body|safe}}
+    </div>
+  </div>
+
+  <img
+    src="{% static 'images/Divider-ish.svg' %}"
+    alt=""
+    style="position: absolute; right: 0; z-index: -100"
+    class="divider1"
+    id="divider"
+  />
+
+  <div class="row vision1" id="vision">
+    <h2 class="orangeText">Vision</h2>
+  </div>
+
+  <div class="row">
+    <p class="body">{{aboutUsVision.body|safe}}</p>
+  </div>
+
+  <div class="row mt-5">
+    <h2 class="orangeText">Mission</h2>
+  </div>
+
+  <div class="row">
+    <p class="body">{{aboutUsMission.body|safe}}</p>
+  </div>
+
+  <div class="mb-4" style="text-align: right !important">
+    <img
+      src="{% static 'images/2stars.png' %}"
+      style="width: 100px; height: 100px"
+      alt=""
+    />
+  </div>
+
+  <div class="row">
+    <h2 class="orangeText">Offices & Clusters</h2>
+  </div>
+
+  <div class="row">
+    <p class="body">{{aboutUsOandC.body|safe}}</p>
+  </div>
+</div>
+<div class="w-100 menuContainer">
+  <div class="col d-flex justify-content-center menuSelection">
+    <button class="active" id="officesButton" onclick="selectOffices()">
+      OFFICES
+    </button>
+    <button id="clustersButton" onclick="selectClusters()">CLUSTERS</button>
+  </div>
+</div>
+<div class="container">
+  <!-- OFFICES -->
+  <div class="mt-5" id="officesAccordion" style="margin-bottom: 128px">
+    <div class="row">
+      {% for o in offices %}
+      <div style="margin-bottom: 16px">
+        <button class="accordionClusters subtitle1">
+          <div class="row">
+            <div class="col-10">
+              <div class="accordiontext">
+                {{o.name|safe}}
+              </div>
+            </div>
+            <div class="col d-flex align-items-center justify-content-end">
+              <i class="fa-solid fa-angle-down arrowdown center"></i>
+            </div>
+          </div>
+          
+          
+          
+        </button>
+        <div class="accordionPanel">
+          <img src="https://drive.google.com/uc?id={{o.officer_photo}}&authuser=0" alt="" style="object-fit: cover; width: 184px;
+          height: 184px; background-color: #AEAEAE;" class="officerPhoto officerPhotoCropper">
+
+          <p class="subtitle1 text-center mt-2 mb-0">{{o.officer_name|safe}}</p>
+
+          <p class="text-center m-0">{{o.officer_position}}</p>
+          
+            <p class="text-center"><a href="mailto:{{o.officer_email}}" style = "text-decoration: none; color: #3b23ee" class="my-auto">{{o.officer_email}}</a></p>
+          
+
+          <div class="container">{{o.office_description|safe}}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- CLUSTERS -->
+  <div
+    class="mt-5 mb-6"
+    id="clustersAccordion"
+    style="display: none; margin-bottom: 128px"
+  >
+    <div class="row">
+      {% for c in clusters %}
+      <div style="margin-bottom: 16px">
+        <button class="accordionClusters ">
+          <div class="row">
+            <div class="clusterPhotoCropper p-0 col-1 my-auto">
+              <img
+                src="https://drive.google.com/uc?id={{c.logo}}&authuser=0"
+                alt=""
+                style="height: 20px !important; margin-left: 6.5px; margin-top: 6.5px;"
+              />
+            </div>
+
+            <div class="col-9 m-0 subtitle1 accordiontext">
+              {{c.name}}
+            </div>
+
+            <div class="col w-100 d-flex align-items-center justify-content-end">
+              <i
+                class="fa-solid fa-angle-down arrowdown subtitle1"
+                style="float: right;"
+                id="arrowdown"
+              ></i>
+            </div>
+
+            
+            
+          </div>
+        </button>
+
+        <div class="accordionPanel">
+
+          <img src="https://drive.google.com/uc?id={{c.officer_photo}}&authuser=0" alt="" style="object-fit: cover; width: 184px;
+          height: 184px; background-color: #AEAEAE;" class="officerPhoto officerPhotoCropper">
+
+          <p class="subtitle1 text-center mt-2 mb-0">{{c.officer_name|safe}}</p>
+
+          <p class="text-center m-0">{{c.cluster_officer_position}}</p>
+
+          <p class="text-center"><a href="mailto:{{o.officer_email}}" style = "text-decoration: none; color: #3b23ee" class="my-auto">{{c.officer_email}}</a></p>
+
+          <p class="container">{{c.description|safe}}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  var officesButton = document.getElementById("officesButton");
+  var clustersButton = document.getElementById("clustersButton");
+  var officesAccordion = document.getElementById("officesAccordion");
+  var clustersAccordion = document.getElementById("clustersAccordion");
+
+  function selectOffices() {
+    officesButton.classList = "active";
+    clustersButton.classList = "";
+    officesAccordion.style.display = "block";
+    clustersAccordion.style.display = "none";
+  }
+  function selectClusters() {
+    officesButton.classList = "";
+    clustersButton.classList = "active";
+    officesAccordion.style.display = "none";
+    clustersAccordion.style.display = "block";
+  }
+</script>
+
+<script>
+  var acc = document.getElementsByClassName("accordionClusters");
+  var panel = document.getElementsByClassName("accordionPanel");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function () {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      panel.classList.toggle("active");
+
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+</script>
+
+<script>
+  let aboutlogo = document.getElementById('aboutlogo')
+  function aboutlogoMobile(){
+    aboutlogo.classList.remove('aboutlogo2')
+    aboutlogo.classList.add('aboutlogo1')
+  }
+
+  function removeaboutlogoMobile(){
+    aboutlogo.classList.remove('aboutlogo1')
+    aboutlogo.classList.add('aboutlogo2')
+  }
+
+  function aboutlogoFormat(){
+    if(window.innerWidth <= 1199){
+      aboutlogoMobile()
+    } else if (window.innerWidth > 1199){
+      removeaboutlogoMobile()
+    }
+  }
+
+  window.addEventListener('resize', aboutlogoFormat)
+  window.addEventListener('load', aboutlogoFormat)
+</script>
+
+<script>
+  let divider = document.getElementById('divider')
+  let vision = document.getElementById('vision')
+
+  function dividerMobile(){
+    divider.classList.remove('divider1')
+    divider.classList.add('divider2')
+    vision.classList.remove('vision1')
+    vision.classList.add('vision2')
+  }
+
+  function removedividerMobile(){
+    divider.classList.remove('divider2')
+    divider.classList.add('divider1')
+    vision.classList.remove('vision2')
+    vision.classList.add('vision1')
+  }
+
+  function dividerFormat(){
+    if(window.innerWidth <= 767){
+      dividerMobile()
+    }
+    else if(window.innerWidth > 767){
+      removedividerMobile()
+    }
+  }
+  
+  window.addEventListener('resize', dividerFormat)
+  window.addEventListener('load', dividerFormat)
+</script>
+
+{% endblock %}

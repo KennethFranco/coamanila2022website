@@ -1,0 +1,565 @@
+{% extends 'base.html' %} {% load static %}
+<head>
+  {% block title %}
+  <title>Organizations</title>
+  {% endblock %}
+</head>
+<body>
+  {% block content %}
+  <div class="container">
+    <!-- TITLE -->
+    <div class="row" style="z-index: -1000;position: static; height: 65px;">
+      <h2 class="orangeText col">The Organizations</h2>
+      <img src="{% static 'images/Stars.svg' %}" alt="" style="height: 176px; width: 170px;" id="staticorg">
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="searchBar" id="searchBarContainer">
+      <input
+        type="text"
+        placeholder="Search..."
+        id="searchBar"
+        onkeyup="findOrg()"
+      />
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" >
+        <path d="M18.9999 19L14.6499 14.65M17 9C17 13.4183 13.4183 17 9 17C4.58172 17 1 13.4183 1 9C1 4.58172 4.58172 1 9 1C13.4183 1 17 4.58172 17 9Z" stroke="#8D8D8D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="magnifyGlass"/>
+      </svg>
+    </div>
+
+    <!-- CLUSTER SORT -->
+    <!-- <div class = "clusterSortMenuParent">
+            <div class = "clusterSortMenu mt-4" onclick = "activateClusterSortMenu()">
+                <p class = "body">Cluster: All Organizations</p>
+                <div id = "clusterDropDown" class = "clusterSortMenuContent">
+                    <p class = "body clusterSortMenuOption">All Organizations</p>
+                    <p class = "body clusterSortMenuOption">All Organizations</p>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- DROPDOWN CONTAINER -->
+        <div class="dropdownSpecial mt-4">
+            <p onclick="myFunction()" class="dropbtn body" id="currentFilter" style = "white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;">
+              Cluster: All Organizations 
+              <img
+              src="{% static 'images/union.png' %}"
+              style="width: 9px; height: 5px; float: right; margin-top: 10px; margin-right: 23.52px;"
+              alt=""
+            />
+            </p>
+            <div id="myDropdown" class="dropdown-content">
+              <p class = "body dropdownSpecialItem" style = "height: 40px; margin-top: 12px; margin-bottom: 0px;" onclick="setFilterStateNormal()">All Organizations</p>
+              {% for c in cluster %}
+              {% if forloop.last %}
+              <p class = "body dropdownSpecialItem" style = "height: 40px; margin-bottom: 12px;" onclick="setFilterState(name = `{{ c.name }}`, imageURL = `{{c.logo}}`, abbv = `{{c.abbreviation}}`, desc = `{{c.description}}`)">
+                <img
+                id="tryImage/{{forloop.counter}}"
+                src="https://drive.google.com/uc?id={{c.logo}}&authuser=0"
+                alt=""
+                style="height: 24px; width: 24px; margin-right: 8px" />
+                {{ c.name }}
+              </p>
+              {% else %}
+              <p class = "body dropdownSpecialItem" style = "height: 40px; margin-bottom: 0px;" onclick="setFilterState(name = `{{ c.name }}`, imageURL = `{{c.logo}}`, abbv = `{{c.abbreviation}}`, desc = `{{c.description}}`)">
+                <img
+                id="tryImage/{{forloop.counter}}"
+                src="https://drive.google.com/uc?id={{c.logo}}&authuser=0"
+                alt=""
+                style="height: 24px; width: 24px; margin-right: 8px" />
+                {{ c.name }}
+              </p>
+              {% endif %}
+  
+              {% endfor %}
+            </div>
+          </div>
+
+    <!-- <div id="organizationClusterSortContainer" class="dropdown dropdownClusterSort dd" style="top: 0; z-index: 100">
+      <div
+        class="clusterSortMenu" 
+        type="button"
+        id="dropdownMenuButton"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <p class="body" id="currentFilter">
+          Cluster: All Organizations
+          <img
+            src="{% static 'images/union.png' %}"
+            style="width: 9px; height: 5px; float: right; margin-top: 10px"
+            alt=""
+          />
+        </p>
+      </div>
+      <div
+        class="dropdown-menu"
+        aria-labelledby="dropdownMenuButton"
+        id="elementsDropdown"
+        style="width: 386px"
+      >
+        <a
+          onclick="setFilterStateNormal()"
+          class="dropdown-item body"
+          href="#"
+          style="cursor: pointer"
+          >All Organizations</a
+        >
+        {% for c in cluster %}
+        <a
+          style="cursor: pointer"
+          onclick="setFilterState(name = `{{ c.name }}`, imageURL = `{{c.logo.url}}`, abbv = `{{c.abbreviation}}`, desc = `{{c.description}}`)"
+          class="dropdown-item body"
+          ><span
+            ><img
+              id="tryImage/{{forloop.counter}}"
+              src="{{ c.logo.url }}"
+              alt=""
+              style="height: 24px; width: 24px; margin-right: 8px" /></span
+          >{{ c.name }}</a
+        >
+        {% endfor %}
+      </div>
+    </div> -->
+
+    <!-- ORGS -->
+
+    <div class="row mt-5" id="clusterDescriptionRow" style="display: none">
+      <p class="body" id="clusterDescriptionContent"></p>
+    </div>
+    <div
+      class="row mt-5 d-flex"
+      id="allOrganizations"
+      style="margin-bottom: 130px"
+    >
+      {% for o in organization %}
+      <!-- OLD -->
+      <!-- <div class = "col-md-4 col-sm-12 orgBox p-5" onclick="window.location=`{% url 'indivorg' pk=o.pk %}`">
+                    <img src="{{ o.logo.url }}" style = "width: 136px; height: 136px;" alt="">
+                    <p class = "subtitle1 orgName">{{o.name}}</p>
+                    <p class = "mt-2">
+                        <label class="{{o.cluster.abbreviation}}ClusterTag">{{o.cluster.abbreviation}}</label>
+                    </p>
+                    <div class="orgTagContainer">
+                        {% for tag in o.tags.all %}\
+                            {{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                    <p class = "orgAbbr" style="display: none;">{{o.abbreviation}}</p>
+            </div>   -->
+
+      <!-- NEW -->
+      <div
+        class="orgWhole col-lg-4 col-md-6 col-sm-12"
+        onclick="window.location=`{% url 'indivorg' pk=o.pk %}`"
+      >
+      <div class="orgBox p-5" style="margin: auto">
+          <img src="https://drive.google.com/uc?id={{o.logo}}&authuser=0" alt="" style="width: 136px; height: 136px; object-fit: cover;">
+          <p class="subtitle1 orgName">{{o.name}}</p>
+          <p class="mt-2">
+            <label class="{{o.cluster.abbreviation}}ClusterTag"
+              >{{o.cluster.abbreviation}}</label
+            >
+          </p>
+          <div class="orgTagContainer d-flex justify-content-center">
+            {% for tag in o.tags.all %}
+            <span class="orgTag"> {{ tag }} </span>
+            {% endfor %}
+          </div>
+          <p class="orgAbbr" style="display: none">{{o.abbreviation}}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- NO RESULTS -->
+    <div class="row" id="orgNoResults" style="display: none">
+      <img
+        class="text-center"
+        src="{% static 'images/coala.png' %}"
+        alt="elo"
+        style="
+          margin: 0 auto;
+          display: block;
+          width: 284px;
+          height: 284px;
+          margin-bottom: 20px;
+        "
+      />
+      <p class="subtitle1 blueberryText text-center">
+        Sorry! We don’t seem to have that org...
+      </p>
+    </div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+    integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    if (localStorage.getItem("filterName") === null) {
+      localStorage.setItem("filterName", "All Organizations");
+    }
+
+    var lastFilter = localStorage.getItem("filterName");
+    var lastImageURL = localStorage.getItem("filterImageURL");
+    var lastAbbreviation = localStorage.getItem("filterAbbreviation");
+    var lastDescription = localStorage.getItem("filterDescription");
+    var searchBar = document.getElementById("searchBar");
+
+    if (lastFilter === "All Organizations") {
+      setFilterStateNormal();
+      document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#3B23EE";
+    } else {
+      setFilterState(
+        lastFilter,
+        lastImageURL,
+        lastAbbreviation,
+        lastDescription
+      );
+    document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#3B23EE";
+    }
+    function setFilterStateNormal() {
+      document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#714CF7";
+      searchBar.value = "";
+      localStorage.setItem("filterName", "All Organizations");
+      document.getElementById("currentFilter").innerHTML =
+        "Cluster: All Organizations";
+      var x = document.createElement("IMG");
+      x.src = "../static/images/union.png";
+      x.style.width = "9px";
+      x.style.height = "5px";
+      x.style.float = "right";
+      x.style.marginTop = "10px";
+      x.style.marginRight = "23.52px";
+      document.getElementById("currentFilter").appendChild(x);
+      document.getElementById("clusterDescriptionRow").style.display = "none";
+      document.getElementById("clusterDescriptionContent").textContent = "";
+      filterAll();
+    }
+
+    function setFilterState(name, imageURL, abbv, desc) {
+      document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#714CF7";
+      localStorage.setItem("filterName", name);
+      
+      localStorage.setItem("filterImageURL", imageURL);
+      
+      
+      localStorage.setItem("filterAbbreviation", abbv);
+      localStorage.setItem("filterDescription", desc);
+      var x = document.createElement("IMG");
+      x.src = imageURL;
+      x.src = "https://drive.google.com/uc?id="+imageURL+"&authuser=0"
+      x.style.height = "24px";
+      x.style.width = "24px";
+      x.style.marginRight = "8px";
+      x.style.marginLeft = "8px";
+
+      var y = document.createElement("IMG");
+      y.src = "../static/images/union.png";
+      y.style.width = "9px";
+      y.style.height = "5px";
+      y.style.float = "right";
+      y.style.marginTop = "10px";
+      y.style.marginRight = "23.52px";
+      document.getElementById("currentFilter").innerHTML = "Cluster: ";
+      document.getElementById("currentFilter").appendChild(x);
+      
+      if (window.innerWidth <= 768){
+        shortenedName = name.replace('Cluster', "") + " " + ". . .";
+        document.getElementById("currentFilter").innerHTML += shortenedName;
+      }
+      else {
+        document.getElementById("currentFilter").innerHTML += name;
+      }
+      
+      document.getElementById("currentFilter").appendChild(y);
+      document.getElementById("clusterDescriptionRow").style.display = "block";
+      document.getElementById("clusterDescriptionContent").style.display =
+        "block";
+      document.getElementById("clusterDescriptionContent").textContent = desc;
+      document.getElementById("searchBar").value = "";
+      filterSpecific(abbv);
+    }
+
+    function activateClusterSortMenu() {
+      document.getElementById("clusterDropDown").classList.toggle("show");
+    }
+
+    function filterAll() {
+      var allElements = document.getElementById("allOrganizations");
+      var children = allElements.children;
+      for (var i = 0; i < children.length; i++) {
+        var actualChild = children[i];
+        actualChild.style.display = "block";
+      }
+      // 
+    }
+
+    // OLD FILTER
+    // function filterSpecific(abbv){
+    //     var allElements = document.getElementById("allOrganizations");
+    //     var children = allElements.children;
+    //     for (var i = 0; i < children.length; i++){
+    //         var actualChild = children[i];
+    //         var gettingAllChildren = children[i].children[2];
+    //         var abbreviation = gettingAllChildren.children[0].textContent;
+    //         if (abbreviation == abbv){
+    //             actualChild.style.display = "block";
+    //         } else{
+    //             actualChild.style.display = "none";
+    //         }
+    //     }
+
+    // }
+
+    // NEW FILTER
+    function filterSpecific(abbv) {
+      var allElements = document.getElementById("allOrganizations");
+      var children = allElements.children;
+      
+      for (var i = 0; i < children.length; i++) {
+        var actualChild = children[i];
+        // 
+        var gettingAllChildren = children[i].children[0];
+        // 
+        var abbreviationDiv = gettingAllChildren.children[2];
+        var abbreviation = abbreviationDiv.children[0].textContent;
+        
+        if (abbreviation == abbv) {
+          actualChild.style.display = "block";
+        } else {
+          actualChild.style.display = "none";
+        }
+      }
+    }
+
+    // HERE
+    var dropdownShown = false;
+    function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+      dropdownShown= !dropdownShown;
+
+      if (dropdownShown == true){
+        document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#714CF7";
+      }
+      else {
+        document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#3B23EE";
+      }
+    }
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function (event) {
+      if (!event.target.matches(".dropbtn")) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+            
+            dropdownShown = false;
+            document.getElementsByClassName("dropbtn")[0].style.backgroundColor = "#3B23EE";
+          }
+        }
+      }
+    };
+
+    function buttonsFormat(){
+      if (lastFilter!= "All Organizations"){
+        if(window.innerWidth <= 768){
+          
+          name = localStorage.getItem("filterName");
+          imageURL = localStorage.getItem("filterImageURL");
+          shortenedName = name.replace('Cluster', "") + " " + ". . .";
+          
+          var x = document.createElement("IMG");
+          x.src = "https://drive.google.com/uc?id="+imageURL+"&authuser=0";
+          x.style.height = "24px";
+          x.style.width = "24px";
+          x.style.marginRight = "8px";
+          x.style.marginLeft = "8px";
+          var y = document.createElement("IMG");
+          y.src = "../static/images/union.png";
+          y.style.width = "9px";
+          y.style.height = "5px";
+          y.style.float = "right";
+          y.style.marginTop = "10px";
+          y.style.marginRight = "23.52px";
+          document.getElementById("currentFilter").innerHTML = "Cluster: ";
+          document.getElementById("currentFilter").appendChild(x);
+          document.getElementById("currentFilter").innerHTML += shortenedName;
+          document.getElementById("currentFilter").appendChild(y);
+        } else {
+          name = localStorage.getItem("filterName");
+          imageURL = localStorage.getItem("filterImageURL");
+          var x = document.createElement("IMG");
+          x.src = "https://drive.google.com/uc?id="+imageURL+"&authuser=0";
+          x.style.height = "24px";
+          x.style.width = "24px";
+          x.style.marginRight = "8px";
+          x.style.marginLeft = "8px";
+          var y = document.createElement("IMG");
+          y.src = "../static/images/union.png";
+          y.style.width = "9px";
+          y.style.height = "5px";
+          y.style.float = "right";
+          y.style.marginTop = "10px";
+          y.style.marginRight = "23.52px";
+          document.getElementById("currentFilter").innerHTML = "Cluster: ";
+          document.getElementById("currentFilter").appendChild(x);
+          document.getElementById("currentFilter").innerHTML += name;
+          document.getElementById("currentFilter").appendChild(y);
+
+        }
+      }
+
+    }
+
+    window.addEventListener('resize',buttonsFormat)
+    window.addEventListener('load',buttonsFormat)
+  </script>
+
+
+  <script>
+    var magnifyGlass = document.getElementById("magnifyGlass");
+    var searchBarContainer = document.getElementById("searchBarContainer");
+    var organizationClusterSortContainer = document.getElementById(
+      "organizationClusterSortContainer"
+    );
+    var searchBar = document.getElementById("searchBar");
+    var orgs = document.querySelectorAll(".orgWhole");
+    var orgNoResults = document.getElementById("orgNoResults");
+
+    function orgResults(counter) {
+      if (counter == 1) {
+        orgNoResults.style.display = "none";
+      } else {
+        orgNoResults.style.display = "";
+      }
+    }
+    function findOrg() {
+      var typeCounter = 0;
+      var filter = searchBar.value.toUpperCase();
+      document.getElementById("currentFilter").innerHTML = "-";
+      document.getElementById("clusterDescriptionContent").style.display =
+        "none";
+      var y = document.createElement("IMG");
+      y.src = "../static/images/union.png";
+      y.style.width = "9px";
+      y.style.height = "5px";
+      y.style.float = "right";
+      y.style.marginTop = "10px";
+      y.style.marginRight = "23.52px";
+      document.getElementById("currentFilter").appendChild(y);
+
+      var orgTags;
+      for (i = 0; i < orgs.length; i++) {
+        var orgTagList = [];
+        var orgName = orgs[i].childNodes[1].childNodes[3].innerHTML;
+        var orgAbbr = orgs[i].childNodes[1].childNodes[9].innerHTML;
+        var orgTagContainer = orgs[i].childNodes[1].childNodes[7].childNodes;
+        for (j = 1; j < orgTagContainer.length; j += 2) {
+          var orgTag = orgTagContainer[j].innerText.toUpperCase();
+          orgTagList.push(orgTag);
+          orgTags = orgTagList.join(" ");
+        }
+        if (orgName.toUpperCase().includes(filter) || orgAbbr.toUpperCase().includes(filter) || orgTags.includes(filter)) {
+          orgs[i].style.display = "block";
+          typeCounter = 1;
+        } 
+        
+        else {
+          orgs[i].style.display = "none";
+        }
+      }
+      orgResults(typeCounter);
+    }
+    function filterOrg() {
+      var filterCounter = 0;
+      for (i = 0; i < orgs.length; i++) {
+        // 
+        if (orgs[i].style.display == "block") {
+          filterCounter = 1;
+        }
+      }
+      orgResults(filterCounter);
+    }
+
+    window.addEventListener("load", filterOrg);
+    document.addEventListener("click", filterOrg);
+
+    document.addEventListener("click", function changeMagnifyGlassColor() {
+      if (searchBar === document.activeElement) {
+        magnifyGlass.setAttribute('stroke','#3B23EE')
+      } else {
+        magnifyGlass.setAttribute('stroke','#8D8D8D')
+      }
+    })
+
+    function adjustToMobile() {
+      if (window.innerWidth >= 992) {
+        searchBarContainer.style.width = "286px";
+        if (organizationClusterSortContainer.classList.contains("show")) {
+          organizationClusterSortContainer.classList = "dropdown dropdownClusterSort mt-4 show";
+        } else {
+          organizationClusterSortContainer.classList = "dropdown dropdownClusterSort mt-4";
+        }
+        organizationClusterSortContainer.style.position = "static"
+
+        document.getElementById("elementsDropdown").classList.remove("w-100");
+      } else if (window.innerWidth < 991) {
+        searchBarContainer.style.width = "100%";
+        if (organizationClusterSortContainer.classList.contains("show")) {
+          organizationClusterSortContainer.classList = "dropdown dropdownClusterSort dd show";
+        } else {
+          organizationClusterSortContainer.classList = "dropdown dropdownClusterSort dd";
+        }
+        organizationClusterSortContainer.style.position = "sticky"
+        organizationClusterSortContainer.style.width = "100%";
+        document.getElementById("elementsDropdown").classList.add("w-100");
+      }
+    }
+    window.addEventListener("resize", adjustToMobile);
+    window.addEventListener("load", adjustToMobile);
+  </script>
+
+  <script>
+    let static = document.getElementById('staticorg')
+
+function staticMobile(){
+    static.classList.add('displaynone')
+  }
+
+  function removestaticMobile(){
+    static.classList.remove('displaynone')
+  }
+
+  function staticFormat(){
+    if(window.innerWidth <= 991){
+        staticMobile()
+    }
+    else if(window.innerWidth > 991){
+        removestaticMobile()
+    }
+  }
+
+  window.addEventListener('resize', staticFormat)
+  window.addEventListener('load', staticFormat)
+  </script>
+
+  {% endblock %}
+</body>
